@@ -1,0 +1,13 @@
+Based on the following text content from a PDF document, provide a comprehensive summary
+that answers the question "What is this PDF about?"
+
+Your summary should include:
+1. The main topic or subject matter
+2. Key themes or concepts discussed
+3. The type of document (research paper, report, manual, etc.)
+4. Any important findings or conclusions (if applicable)
+
+Text content:
+{text}
+
+Summary:
