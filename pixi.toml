@@ -2,12 +2,12 @@
 authors = ["Joshua Shapiro <josh.shapiro@ccdatalab.org>"]
 channels = ["conda-forge", "bioconda"]
 name = "rsp-evaluator"
-platforms = ["osx-arm64"]
+platforms = ["osx-arm64", "win-64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
 test = "pytest tests/ -v"
-llm-setup = "ollama serve & sleep 2 && ollama pull llama3.2"
+llm-setup = "ollama pull llama3.2"
 
 [dependencies]
 python = "3.13.*"
@@ -23,3 +23,4 @@ langchain-ollama = ">=1.0.0,<2"
 langchain-community = ">=0.4.1,<0.5"
 langchain-text-splitters = ">=1.0.0,<2"
 pymupdf = ">=1.26.6, <2"
+docx2txt = ">=0.8"
