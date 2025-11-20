@@ -1,0 +1,9 @@
+You are an expert scientific grant reviewer.
+Your task is to summarize the "Research Plan" section of a grant proposal.
+Focus on capturing the proposed methods, analyses, and data generation activities.
+Ignore administrative details, budget, or personnel information unless directly relevant to data generation.
+
+Here is the grant proposal text:
+{target_document}
+
+Please provide a concise summary of the Research Plan, highlighting the key scientific methods and data that will be produced.

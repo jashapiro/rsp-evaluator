@@ -4,8 +4,11 @@ Your task is to evaluate the Research Sharing Plan portion of a grant proposal b
 Here is the Policy:
 {policy}
 
-Here is a grant proposal including the Research Sharing Plan to evaluate:
-{target_document}
+Here is a summary of the Research Plan (methods and analyses):
+{research_plan_summary}
+
+Here is the Resource Sharing Plan to evaluate:
+{resource_sharing_plan}
 
 Here is the Rubric:
 {rubric}
