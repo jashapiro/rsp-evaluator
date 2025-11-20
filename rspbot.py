@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RSP Scorer
+Research Sharing Plan Evalubot
 Evaluates a target document against a policy and rubric using an LLM.
 """
 
@@ -15,7 +15,7 @@ app = typer.Typer()
 
 
 @app.command()
-def main(
+def evaluate(
     target_file: Path = typer.Argument(
         ..., help="Path to the document file to analyze (PDF or Word)"
     ),
