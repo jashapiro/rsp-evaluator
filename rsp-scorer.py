@@ -96,5 +96,20 @@ def main(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def serve(
+    host: str = typer.Option("127.0.0.1", help="Host to bind the server to"),
+    port: int = typer.Option(8000, help="Port to bind the server to"),
+    reload: bool = typer.Option(False, help="Enable auto-reload"),
+):
+    """
+    Start the web interface.
+    """
+    import uvicorn
+
+    print(f"Starting web interface at http://{host}:{port}")
+    uvicorn.run("src.web:app", host=host, port=port, reload=reload)
+
+
 if __name__ == "__main__":
     app()
