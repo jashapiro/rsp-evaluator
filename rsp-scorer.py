@@ -8,6 +8,7 @@ from pathlib import Path
 
 import typer
 
+from src.config import DEFAULT_MODEL_NAME, DEFAULT_POLICY_PATH, DEFAULT_RUBRIC_PATH
 from src.evaluator import evaluate_document
 
 app = typer.Typer()
@@ -19,19 +20,19 @@ def main(
         ..., help="Path to the document file to analyze (PDF or Word)"
     ),
     policy: Path = typer.Option(
-        "reference/alsf_resource_sharing_policy.pdf",
+        DEFAULT_POLICY_PATH,
         "--policy",
         "-p",
         help="Path to the policy document",
     ),
     rubric: str = typer.Option(
-        "reference/RSP-Rubric-4_11_23.docx",
+        str(DEFAULT_RUBRIC_PATH),
         "--rubric",
         "-r",
         help="Path to the rubric document",
     ),
     model_name: str = typer.Option(
-        "llama3.2", "--model", "-m", help="Ollama model to use for analysis"
+        DEFAULT_MODEL_NAME, "--model", "-m", help="Ollama model to use for analysis"
     ),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", help="Enable verbose output"
@@ -94,6 +95,21 @@ def main(
     except Exception as e:
         print(f"Error evaluating document: {e}")
         raise typer.Exit(code=1)
+
+
+@app.command()
+def serve(
+    host: str = typer.Option("127.0.0.1", help="Host to bind the server to"),
+    port: int = typer.Option(8000, help="Port to bind the server to"),
+    reload: bool = typer.Option(False, help="Enable auto-reload"),
+):
+    """
+    Start the web interface.
+    """
+    import uvicorn
+
+    print(f"Starting web interface at http://{host}:{port}")
+    uvicorn.run("src.web:app", host=host, port=port, reload=reload)
 
 
 if __name__ == "__main__":

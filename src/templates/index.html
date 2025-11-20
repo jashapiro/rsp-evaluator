@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Sharing Plan Evaluatobot</title>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-color: #1e293b;
+        --border-color: #e2e8f0;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      header {
+        width: 100%;
+        background-color: var(--card-bg);
+        padding: 1rem 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      main {
+        width: 100%;
+        max-width: 800px;
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .upload-area {
+        background-color: var(--card-bg);
+        border: 2px dashed var(--border-color);
+        border-radius: 0.75rem;
+        padding: 3rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .upload-area:hover,
+      .upload-area.dragover {
+        border-color: var(--primary-color);
+        background-color: #eff6ff;
+      }
+
+      .upload-icon {
+        font-size: 3rem;
+        color: #94a3b8;
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 1rem;
+      }
+
+      .btn:hover {
+        background-color: #1d4ed8;
+      }
+
+      .btn:disabled {
+        background-color: #94a3b8;
+        cursor: not-allowed;
+      }
+
+        #result-area {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: none;
+            line-height: 1.6;
+        }
+
+        #result-area h1, #result-area h2, #result-area h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        #result-area p {
+            margin-bottom: 0.5rem;
+        }
+
+        #result-area ul, #result-area ol {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        #result-area li {
+            margin-bottom: 0.25rem;
+        }
+
+        #result-area *:first-child {
+            margin-top: 0;
+        }
+
+        #result-area *:last-child {
+            margin-bottom: 0;
+        }
+
+      .loading {
+        display: none;
+        margin-top: 1rem;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .file-info {
+        margin-top: 1rem;
+        font-weight: 500;
+        color: var(--text-color);
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Research Sharing Plan Evaluatobot</h1>
+    </header>
+
+    <main>
+      <div class="upload-area" id="drop-zone">
+        <div class="upload-icon">📄</div>
+        <h2>Drag & Drop Grant File Here</h2>
+        <p>or click to select a file</p>
+        <input
+          type="file"
+          id="file-input"
+          style="display: none"
+          accept=".pdf,.docx,.doc"
+        />
+        <div id="file-name" class="file-info"></div>
+        <button id="evaluate-btn" class="btn" disabled>
+          Evaluate Document
+        </button>
+        <button id="save-btn" class="btn" style="display: none; margin-left: 1rem; background-color: #10b981;">
+            Save as Markdown
+        </button>
+        <div id="loading" class="loading">
+          Evaluating... This may take a moment.
+        </div>
+      </div>
+
+      <div id="result-area"></div>
+    </main>
+
+    <script>
+      const dropZone = document.getElementById("drop-zone");
+      const fileInput = document.getElementById("file-input");
+      const fileNameDisplay = document.getElementById("file-name");
+      const evaluateBtn = document.getElementById("evaluate-btn");
+      const saveBtn = document.getElementById("save-btn");
+      const loadingDiv = document.getElementById("loading");
+      const resultArea = document.getElementById("result-area");
+
+      let selectedFile = null;
+      let currentResult = null;
+
+      // Drag and drop handlers
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("dragover");
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        if (e.dataTransfer.files.length) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      dropZone.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      function handleFile(file) {
+        selectedFile = file;
+        fileNameDisplay.textContent = `Selected: ${file.name}`;
+        evaluateBtn.disabled = false;
+        saveBtn.style.display = "none";
+        resultArea.style.display = "none";
+        resultArea.textContent = "";
+        currentResult = null;
+      }
+
+      evaluateBtn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // Prevent triggering dropZone click
+        if (!selectedFile) return;
+
+        loadingDiv.style.display = "block";
+        evaluateBtn.disabled = true;
+        saveBtn.style.display = "none";
+        resultArea.style.display = "none";
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        try {
+          const response = await fetch("/evaluate", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          currentResult = data.result;
+          resultArea.innerHTML = marked.parse(data.result);
+          resultArea.style.display = "block";
+          saveBtn.style.display = "inline-block";
+        } catch (error) {
+          resultArea.textContent = `An error occurred: ${error.message}`;
+          resultArea.style.display = "block";
+        } finally {
+          loadingDiv.style.display = "none";
+          evaluateBtn.disabled = false;
+        }
+      });
+
+      saveBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!currentResult) return;
+
+        const blob = new Blob([currentResult], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "evaluation_result.md";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    </script>
+  </body>
+</html>

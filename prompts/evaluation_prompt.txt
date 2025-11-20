@@ -15,3 +15,5 @@ You should consider the overall context of the proposal, and evaluate whether th
 You can ignore any section of the grant proposal that are related to individual investigators, budgeting, or other sections that are not relevant to the Research Sharing Plan.
 Provide separate scores for each portion of the rubric on a scale from 1 to 5 with 1 being the best and 5 being the worst, with feedback for each criterion in the rubric.
 Finally, provide an overall score (on a scale from 1 to 5 with 1 being the best and 5 being the worst) and a summary of the evaluation.
+
+IMPORTANT: Format your entire response in Markdown. Use headers, lists, and bold text to make it readable.
