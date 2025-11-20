@@ -6,16 +6,13 @@ from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from src.config import DEFAULT_MODEL_NAME, DEFAULT_POLICY_PATH, DEFAULT_RUBRIC_PATH
 from src.evaluator import evaluate_document
 
 app = FastAPI()
 
 # Setup templates
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
-
-# Default paths (can be made configurable if needed)
-POLICY_PATH = Path("reference/alsf_resource_sharing_policy.pdf")
-RUBRIC_PATH = Path("reference/RSP-Rubric-4_11_23.docx")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -33,20 +30,20 @@ async def evaluate(file: UploadFile = File(...)):
 
     try:
         # Ensure policy and rubric exist relative to CWD if not absolute
-        policy = POLICY_PATH
+        policy = DEFAULT_POLICY_PATH
         if not policy.exists() and not policy.is_absolute():
-            policy = Path.cwd() / POLICY_PATH
+            policy = Path.cwd() / DEFAULT_POLICY_PATH
 
-        rubric = RUBRIC_PATH
+        rubric = DEFAULT_RUBRIC_PATH
         if not rubric.exists() and not rubric.is_absolute():
-            rubric = Path.cwd() / RUBRIC_PATH
+            rubric = Path.cwd() / DEFAULT_RUBRIC_PATH
 
         # Run evaluation
         result = evaluate_document(
             target_path=tmp_path,
             policy_path=policy,
             rubric_path=rubric,
-            model_name="llama3.2",  # Default model
+            model_name=DEFAULT_MODEL_NAME,
             verbose=True,
         )
         return {"result": result}
