@@ -17,6 +17,12 @@ Please evaluate the Research Sharing Plan against the Policy using the Rubric.
 You should consider the overall context of the proposal, and evaluate whether the research sharing plan includes plans for sharing outputs from all of the methods and analyses that are proposed in the grant.
 You can ignore any section of the grant proposal that are related to individual investigators, budgeting, or other sections that are not relevant to the Research Sharing Plan.
 Provide separate scores for each portion of the rubric on a scale from 1 to 5 with 1 being the best and 5 being the worst, with feedback for each criterion in the rubric.
+
+If the Research Sharing Plan is from an initial application, only provide application scores and skip progress report scores.
+Similarly, if this is a progress report, only provide progress report scores and skip application scores.
+If there are sections of the rubric that are not relevant to the Research Sharing Plan or Resarch Plan, give those sections a score of "N/A".
+However, if there are parts of rubric that _should_ be covered by the Research Sharing Plan based on the contents of the Research Plan, give those sections a score best on your best reading of the Research Sharing Plan, and provide feedback on why you think that aspect should be addressed in the Research Sharing Plan.
+
 Finally, provide an overall score (on a scale from 1 to 5 with 1 being the best and 5 being the worst) and a summary of the evaluation.
 
 IMPORTANT: Format your entire response in Markdown. Use headers, lists, and bold text to make it readable.
