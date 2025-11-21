@@ -1,7 +1,10 @@
+import time
 from pathlib import Path
+from typing import Any, Dict, Generator, Union
 
 from langchain_core.prompts import PromptTemplate
 
+from src.llm import setup_ollama_llm
 from src.loader import load_document
 
 
@@ -11,21 +14,43 @@ def evaluate_document(
     rubric_path: Path,
     model_name: str = "llama3.2",
     verbose: bool = False,
-) -> str:
-    """Evaluate a target document against a policy and rubric."""
+) -> Generator[Dict[str, Any], None, None]:
+    """
+    Evaluate a target document against a policy and rubric.
+    Yields status updates and finally the result.
+    """
 
-    from src.llm import setup_ollama_llm
+    # Helper to yield status
+    def yield_status(stage: str, message: str, start_time: float) -> Dict[str, Any]:
+        elapsed = time.time() - start_time
+        return {
+            "type": "status",
+            "stage": stage,
+            "message": message,
+            "elapsed": elapsed,
+        }
+
+    total_start_time = time.time()
 
     # Load documents
+    yield {
+        "type": "status",
+        "stage": "loading",
+        "message": "Loading documents...",
+        "elapsed": 0.0,
+    }
+
+    step_start = time.time()
     target_docs = load_document(target_path, verbose=verbose)
     policy_docs = load_document(policy_path, verbose=verbose)
     rubric_docs = load_document(rubric_path, verbose=verbose)
 
     # Extract text content
-    # For simplicity, we'll just join all text. For very large docs, we might need better chunking/retrieval.
     target_text = "\n\n".join([d.page_content for d in target_docs])
     policy_text = "\n\n".join([d.page_content for d in policy_docs])
     rubric_text = "\n\n".join([d.page_content for d in rubric_docs])
+
+    yield yield_status("loading", "Documents loaded", step_start)
 
     # Load prompt templates
     prompts_dir = Path(__file__).parent.parent / "prompts"
@@ -37,6 +62,14 @@ def evaluate_document(
     llm = setup_ollama_llm(model_name, verbose=verbose)
 
     # Step 1: Summarize Research Plan
+    step_start = time.time()
+    yield {
+        "type": "status",
+        "stage": "summarizing",
+        "message": "Summarizing Research Plan...",
+        "elapsed": 0.0,
+    }
+
     if verbose:
         print("Summarizing Research Plan...")
 
@@ -47,7 +80,17 @@ def evaluate_document(
     summary_chain = summary_prompt | llm
     research_plan_summary = summary_chain.invoke({"target_document": target_text})
 
+    yield yield_status("summarizing", "Research Plan summarized", step_start)
+
     # Step 2: Extract Resource Sharing Plan
+    step_start = time.time()
+    yield {
+        "type": "status",
+        "stage": "extracting",
+        "message": "Extracting Resource Sharing Plan...",
+        "elapsed": 0.0,
+    }
+
     if verbose:
         print("Extracting Resource Sharing Plan...")
 
@@ -58,7 +101,17 @@ def evaluate_document(
     extraction_chain = extraction_prompt | llm
     resource_sharing_plan = extraction_chain.invoke({"target_document": target_text})
 
+    yield yield_status("extracting", "Resource Sharing Plan extracted", step_start)
+
     # Step 3: Evaluate
+    step_start = time.time()
+    yield {
+        "type": "status",
+        "stage": "evaluating",
+        "message": "Evaluating against Rubric...",
+        "elapsed": 0.0,
+    }
+
     if verbose:
         print("Evaluating against Rubric...")
 
@@ -87,4 +140,10 @@ def evaluate_document(
         }
     )
 
-    return result
+    yield yield_status("evaluating", "Evaluation complete", step_start)
+
+    yield {
+        "type": "result",
+        "content": result,
+        "total_elapsed": time.time() - total_start_time,
+    }

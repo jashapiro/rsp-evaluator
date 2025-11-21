@@ -1,9 +1,10 @@
+import json
 import shutil
 import tempfile
 from pathlib import Path
 
 from fastapi import FastAPI, File, Request, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
 from src.config import DEFAULT_MODEL_NAME, DEFAULT_POLICY_PATH, DEFAULT_RUBRIC_PATH
@@ -28,30 +29,33 @@ async def evaluate(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, tmp)
         tmp_path = Path(tmp.name)
 
-    try:
-        # Ensure policy and rubric exist relative to CWD if not absolute
-        policy = DEFAULT_POLICY_PATH
-        if not policy.exists() and not policy.is_absolute():
-            policy = Path.cwd() / DEFAULT_POLICY_PATH
+    async def event_generator():
+        try:
+            # Ensure policy and rubric exist relative to CWD if not absolute
+            policy = DEFAULT_POLICY_PATH
+            if not policy.exists() and not policy.is_absolute():
+                policy = Path.cwd() / DEFAULT_POLICY_PATH
 
-        rubric = DEFAULT_RUBRIC_PATH
-        if not rubric.exists() and not rubric.is_absolute():
-            rubric = Path.cwd() / DEFAULT_RUBRIC_PATH
+            rubric = DEFAULT_RUBRIC_PATH
+            if not rubric.exists() and not rubric.is_absolute():
+                rubric = Path.cwd() / DEFAULT_RUBRIC_PATH
 
-        # Run evaluation
-        result = evaluate_document(
-            target_path=tmp_path,
-            policy_path=policy,
-            rubric_path=rubric,
-            model_name=DEFAULT_MODEL_NAME,
-            verbose=True,
-        )
-        return {"result": result}
+            # Run evaluation
+            for event in evaluate_document(
+                target_path=tmp_path,
+                policy_path=policy,
+                rubric_path=rubric,
+                model_name=DEFAULT_MODEL_NAME,
+                verbose=True,
+            ):
+                yield json.dumps(event) + "\n"
 
-    except Exception as e:
-        return {"result": f"Error during evaluation: {str(e)}"}
+        except Exception as e:
+            yield json.dumps({"type": "error", "message": str(e)}) + "\n"
 
-    finally:
-        # Clean up temp file
-        if tmp_path.exists():
-            tmp_path.unlink()
+        finally:
+            # Clean up temp file
+            if tmp_path.exists():
+                tmp_path.unlink()
+
+    return StreamingResponse(event_generator(), media_type="application/x-ndjson")

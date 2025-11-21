@@ -71,29 +71,57 @@ def eval(
         if not rubric_path.exists():
             raise typer.BadParameter(f"Rubric file not found: {rubric}")
 
+    from rich.console import Console
+    from rich.progress import Progress, SpinnerColumn, TextColumn
+
+    console = Console()
+
     try:
-        evaluation = evaluate_document(
-            target_path,
-            policy_path,
-            rubric_path,
-            model_name=model_name,
-            verbose=verbose,
-        )
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+            transient=True,
+        ) as progress:
+            task_id = progress.add_task("Starting...", total=None)
+
+            eval_generator = evaluate_document(
+                target_path,
+                policy_path,
+                rubric_path,
+                model_name=model_name,
+                verbose=verbose,
+            )
+
+            final_result = ""
+
+            for event in eval_generator:
+                if event["type"] == "status":
+                    progress.update(task_id, description=f"{event['message']}")
+                    if event.get("elapsed"):
+                        console.print(
+                            f"[green]✓[/green] {event['stage'].title()} completed in {event['elapsed']:.2f}s"
+                        )
+                elif event["type"] == "result":
+                    final_result = event["content"]
+                    console.print(
+                        f"[bold green]Total time: {event['total_elapsed']:.2f}s[/bold green]"
+                    )
 
         # Format output
-        output = f"\n{'=' * 70}\nDOCUMENT EVALUATION REPORT\n{'=' * 70}\n{evaluation}\n{'=' * 70}\n"
+        output = f"\n{'=' * 70}\nDOCUMENT EVALUATION REPORT\n{'=' * 70}\n{final_result}\n{'=' * 70}\n"
 
         # Write to file or print to stdout
         if output_file:
             output_path = Path(output_file)
-            output_path.write_text(evaluation)
+            output_path.write_text(final_result)
             if verbose:
-                print(f"Evaluation written to: {output_file}")
+                console.print(f"Evaluation written to: {output_file}")
         else:
-            print(output)
+            console.print(output)
 
     except Exception as e:
-        print(f"Error evaluating document: {e}")
+        console.print(f"[bold red]Error evaluating document:[/bold red] {e}")
         raise typer.Exit(code=1)
 
 
