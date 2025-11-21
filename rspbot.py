@@ -15,7 +15,7 @@ app = typer.Typer()
 
 
 @app.command()
-def evaluate(
+def eval(
     target_file: Path = typer.Argument(
         ..., help="Path to the document file to analyze (PDF or Word)"
     ),
@@ -25,8 +25,8 @@ def evaluate(
         "-p",
         help="Path to the policy document",
     ),
-    rubric: str = typer.Option(
-        str(DEFAULT_RUBRIC_PATH),
+    rubric: Path = typer.Option(
+        DEFAULT_RUBRIC_PATH,
         "--rubric",
         "-r",
         help="Path to the rubric document",
