@@ -7,7 +7,7 @@ version = "0.1.0"
 
 [tasks]
 test = "pytest tests/ -v"
-llm-setup = "ollama pull llama3.2"
+llm-setup = "ollama pull granite3.3"
 
 [dependencies]
 python = "3.13.*"
@@ -15,6 +15,7 @@ poppler = ">=25.7.0,<26"
 ollama = ">=0.12.10,<0.13"
 marimo = ">=0.17.7,<0.18"
 typer = ">=0.17.0,<0.18"
+rich = ">=13.7.0"
 pytest = ">=8.0.0,<9"
 
 [pypi-dependencies]

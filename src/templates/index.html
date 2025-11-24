@@ -230,6 +230,7 @@
         if (!selectedFile) return;
 
         loadingDiv.style.display = "block";
+        loadingDiv.textContent = "Starting evaluation...";
         evaluateBtn.disabled = true;
         saveBtn.style.display = "none";
         resultArea.style.display = "none";
@@ -247,17 +248,53 @@
             throw new Error(`Error: ${response.statusText}`);
           }
 
-          const data = await response.json();
-          currentResult = data.result;
-          resultArea.innerHTML = marked.parse(data.result);
-          resultArea.style.display = "block";
-          saveBtn.style.display = "inline-block";
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop(); // Keep the last incomplete line in the buffer
+
+            for (const line of lines) {
+              if (!line.trim()) continue;
+              try {
+                const event = JSON.parse(line);
+                if (event.type === "status") {
+                    let msg = event.message;
+                    if (event.elapsed) {
+                        msg += ` (${event.elapsed.toFixed(2)}s)`;
+                    }
+                    loadingDiv.textContent = msg;
+                } else if (event.type === "result") {
+                    currentResult = event.content;
+                    resultArea.innerHTML = marked.parse(event.content);
+                    resultArea.style.display = "block";
+                    saveBtn.style.display = "inline-block";
+                    loadingDiv.textContent = `Evaluation complete! Total time: ${event.total_elapsed.toFixed(2)}s`;
+                } else if (event.type === "error") {
+                    throw new Error(event.message);
+                }
+              } catch (parseError) {
+                console.error("Error parsing JSON:", parseError);
+              }
+            }
+          }
+
         } catch (error) {
           resultArea.textContent = `An error occurred: ${error.message}`;
           resultArea.style.display = "block";
-        } finally {
           loadingDiv.style.display = "none";
-          evaluateBtn.disabled = false;
+        } finally {
+           // Don't hide loadingDiv immediately if successful, so user sees "Evaluation complete"
+           if (!currentResult) {
+               loadingDiv.style.display = "none";
+           }
+           evaluateBtn.disabled = false;
         }
       });
 

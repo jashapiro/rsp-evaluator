@@ -1,0 +1,9 @@
+You are an expert scientific grant reviewer.
+Your task is to extract the "Resource Sharing Plan" or "Data Sharing Plan" section from a grant proposal VERBATIM.
+Do not summarize or rewrite it. Just extract the exact text.
+If the section is not explicitly labeled, look for the section that describes how data, code, and other resources will be shared.
+
+Here is the grant proposal text:
+{target_document}
+
+Please extract the Resource Sharing Plan text below:

@@ -1,0 +1,18 @@
+You are an expert scientific grant reviewer.
+Your task is to summarize the "Research Plan" section of a grant proposal.
+Focus on capturing the proposed methods, analyses, and data generation activities.
+Ignore administrative details, budget, or personnel information unless directly relevant to data generation.
+
+Here is the grant proposal text:
+{target_document}
+
+Please provide a concise summary of the Research Plan, highlighting the key scientific methods and resulting data and resources that will be produced.
+Pay particular attention to the types of outputs that other researchers are likely to find most useful.
+These will include things like:
+ - experimental design and statistical analysis plans
+ - analysis code and methods
+ - experimental design and statistical analysis plans
+ - genome, transcriptome, and proteome, and metabolome data
+ - other measurements of experimental results
+ - plasmids, cell lines, mouse lines, and other biological materials
+ - clinical trial results
