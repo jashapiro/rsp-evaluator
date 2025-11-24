@@ -8,6 +8,56 @@ from src.llm import setup_ollama_llm
 from src.loader import load_document
 
 
+def summarize_research_plan(
+    target_path: Path,
+    model_name: str = "llama3.2",
+    verbose: bool = False,
+) -> str:
+    """
+    Summarize the research plan from a target document.
+    """
+    target_docs = load_document(target_path, verbose=verbose)
+    target_text = "\n\n".join([d.page_content for d in target_docs])
+
+    prompts_dir = Path(__file__).parent.parent / "prompts"
+    summary_prompt_template = (prompts_dir / "summarize_research_plan.txt").read_text()
+
+    llm = setup_ollama_llm(model_name, verbose=verbose)
+
+    summary_prompt = PromptTemplate(
+        input_variables=["target_document"],
+        template=summary_prompt_template,
+    )
+    summary_chain = summary_prompt | llm
+    research_plan_summary = summary_chain.invoke({"target_document": target_text})
+    return research_plan_summary
+
+
+def extract_sharing_plan(
+    target_path: Path,
+    model_name: str = "llama3.2",
+    verbose: bool = False,
+) -> str:
+    """
+    Extract the resource sharing plan from a target document.
+    """
+    target_docs = load_document(target_path, verbose=verbose)
+    target_text = "\n\n".join([d.page_content for d in target_docs])
+
+    prompts_dir = Path(__file__).parent.parent / "prompts"
+    extraction_prompt_template = (prompts_dir / "extract_sharing_plan.txt").read_text()
+
+    llm = setup_ollama_llm(model_name, verbose=verbose)
+
+    extraction_prompt = PromptTemplate(
+        input_variables=["target_document"],
+        template=extraction_prompt_template,
+    )
+    extraction_chain = extraction_prompt | llm
+    resource_sharing_plan = extraction_chain.invoke({"target_document": target_text})
+    return resource_sharing_plan
+
+
 def evaluate_document(
     target_path: Path,
     policy_path: Path,
@@ -41,12 +91,10 @@ def evaluate_document(
     }
 
     step_start = time.time()
-    target_docs = load_document(target_path, verbose=verbose)
     policy_docs = load_document(policy_path, verbose=verbose)
     rubric_docs = load_document(rubric_path, verbose=verbose)
 
     # Extract text content
-    target_text = "\n\n".join([d.page_content for d in target_docs])
     policy_text = "\n\n".join([d.page_content for d in policy_docs])
     rubric_text = "\n\n".join([d.page_content for d in rubric_docs])
 
@@ -54,9 +102,6 @@ def evaluate_document(
 
     # Load prompt templates
     prompts_dir = Path(__file__).parent.parent / "prompts"
-
-    summary_prompt_template = (prompts_dir / "summarize_research_plan.txt").read_text()
-    extraction_prompt_template = (prompts_dir / "extract_sharing_plan.txt").read_text()
     eval_prompt_template = (prompts_dir / "evaluation_prompt.txt").read_text()
 
     llm = setup_ollama_llm(model_name, verbose=verbose)
@@ -73,12 +118,7 @@ def evaluate_document(
     if verbose:
         print("Summarizing Research Plan...")
 
-    summary_prompt = PromptTemplate(
-        input_variables=["target_document"],
-        template=summary_prompt_template,
-    )
-    summary_chain = summary_prompt | llm
-    research_plan_summary = summary_chain.invoke({"target_document": target_text})
+    research_plan_summary = summarize_research_plan(target_path, model_name, verbose)
 
     yield yield_status("summarizing", "Research Plan summarized", step_start)
 
@@ -94,12 +134,7 @@ def evaluate_document(
     if verbose:
         print("Extracting Resource Sharing Plan...")
 
-    extraction_prompt = PromptTemplate(
-        input_variables=["target_document"],
-        template=extraction_prompt_template,
-    )
-    extraction_chain = extraction_prompt | llm
-    resource_sharing_plan = extraction_chain.invoke({"target_document": target_text})
+    resource_sharing_plan = extract_sharing_plan(target_path, model_name, verbose)
 
     yield yield_status("extracting", "Resource Sharing Plan extracted", step_start)
 

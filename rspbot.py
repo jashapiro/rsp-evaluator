@@ -126,6 +126,88 @@ def eval(
 
 
 @app.command()
+def summarize(
+    target_file: Path = typer.Argument(
+        ..., help="Path to the document file to analyze (PDF or Word)"
+    ),
+    model_name: str = typer.Option(
+        DEFAULT_MODEL_NAME, "--model", "-m", help="Ollama model to use for analysis"
+    ),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    output_file: Path = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output file path (optional, prints to stdout if not specified)",
+    ),
+):
+    """
+    Summarize the research plan from a document.
+    """
+    from rich.console import Console
+
+    from src.evaluator import summarize_research_plan
+
+    console = Console()
+
+    try:
+        summary = summarize_research_plan(
+            target_file, model_name=model_name, verbose=verbose
+        )
+        if output_file:
+            output_file.write_text(summary)
+            console.print(f"Summary written to {output_file}")
+        else:
+            console.print(summary)
+    except Exception as e:
+        console.print(f"[bold red]Error summarizing document:[/bold red] {e}")
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def extract(
+    target_file: Path = typer.Argument(
+        ..., help="Path to the document file to analyze (PDF or Word)"
+    ),
+    model_name: str = typer.Option(
+        DEFAULT_MODEL_NAME, "--model", "-m", help="Ollama model to use for analysis"
+    ),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    output_file: Path = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output file path (optional, prints to stdout if not specified)",
+    ),
+):
+    """
+    Extract the resource sharing plan from a document.
+    """
+    from rich.console import Console
+
+    from src.evaluator import extract_sharing_plan
+
+    console = Console()
+
+    try:
+        sharing_plan = extract_sharing_plan(
+            target_file, model_name=model_name, verbose=verbose
+        )
+        if output_file:
+            output_file.write_text(sharing_plan)
+            console.print(f"Sharing plan written to {output_file}")
+        else:
+            console.print(sharing_plan)
+    except Exception as e:
+        console.print(f"[bold red]Error extracting sharing plan:[/bold red] {e}")
+        raise typer.Exit(code=1)
+
+
+@app.command()
 def serve(
     host: str = typer.Option("127.0.0.1", help="Host to bind the server to"),
     port: int = typer.Option(8000, help="Port to bind the server to"),
