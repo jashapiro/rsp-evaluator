@@ -7,7 +7,7 @@ version = "0.1.0"
 
 [tasks]
 test = "pytest tests/ -v"
-llm-setup = "ollama pull granite4:3b-h"
+llm-setup = "ollama pull granite3.3"
 
 [dependencies]
 python = "3.13.*"
