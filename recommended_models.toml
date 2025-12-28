@@ -1,0 +1,74 @@
+# Recommended models for RSP evaluation tasks
+# Models are selected for document understanding, instruction following, and structured output
+# All models sized to run on M1 with 64GB RAM
+
+# Qwen 2.5 - Alibaba's model, excellent instruction following and structured output
+[[models]]
+name = "qwen2.5:32b"
+description = "Qwen 2.5 large - best instruction following"
+
+[[models]]
+name = "qwen2.5:7b"
+description = "Qwen 2.5 small - fast, good quality"
+
+# Llama 3 - Meta's model, strong general capability
+[[models]]
+name = "llama3.3:70b"
+description = "Llama 3.3 large - latest Meta model (requires ~40GB)"
+
+[[models]]
+name = "llama3.2:3b"
+description = "Llama 3.2 small - efficient variant"
+
+# Gemma 2 - Google's model, strong reasoning
+[[models]]
+name = "gemma2:27b"
+description = "Gemma 2 large - strong reasoning"
+
+[[models]]
+name = "gemma2:9b"
+description = "Gemma 2 small - good balance"
+
+# Mistral/Mixtral - Fast, good at extraction
+[[models]]
+name = "mistral-small:24b"
+description = "Mistral Small - optimized for efficiency"
+
+[[models]]
+name = "mistral:7b"
+description = "Mistral 7B - fast baseline"
+
+# Phi - Microsoft's efficient models
+[[models]]
+name = "phi3:medium"
+description = "Phi 3 medium (14B) - good instruction following"
+
+[[models]]
+name = "phi3:mini"
+description = "Phi 3 mini (3.8B) - very efficient"
+
+# Granite - IBM's enterprise-focused models
+[[models]]
+name = "granite4:8b"
+description = "Granite 4 large - latest IBM model"
+
+[[models]]
+name = "granite4:3b"
+description = "Granite 4 small - efficient variant"
+
+[[models]]
+name = "granite3.3:8b"
+description = "Granite 3.3 large - enterprise focused"
+
+[[models]]
+name = "granite3.3:2b"
+description = "Granite 3.3 small - lightweight"
+
+# Command R - Cohere's model, good at document tasks
+[[models]]
+name = "command-r:35b"
+description = "Command R - optimized for RAG and documents"
+
+[[models]]
+name = "command-r7b:7b"
+description = "Command R7B - smaller document model"
