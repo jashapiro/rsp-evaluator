@@ -1,0 +1,11 @@
+The research plan aims to investigate the relationship between TP53 mutations and MHC-I expression in pediatric high-grade gliomas (pHGGs), with the hypothesis that TP53 mutations may reduce MHC-I expression, rendering tumors resistant to T cell-based immunotherapy. The plan involves:
+
+1. Determining whether p53 regulates MHC-I expression in pHGG models using genetically engineered and patient-derived samples through FACS analysis and real-time RT-PCR for gene transcript levels. 
+2. Testing the resistance of p53-mutant tumor cells to T cell-mediated killing by co-culturing them with allogeneic CD8+ T cells, assessing activation markers, proliferation, cytokine production, and cytotoxic function via FACS-based assays.
+3. Examining whether p53 inactivation in wild-type (WT) pHGG cells decreases MHC-I expression and promotes resistance to T cell-mediated killing using similar methods as above.
+4. Testing the effect of activators of TNFR signaling, such as tumor necrosis factor alpha (TNFa) or lymphotoxin beta receptor agonist (LT-bRag), on MHC-I expression and immune responses to pHGGs.
+5. Determining whether pretreatment with TNFR ligands sensitizes tumors to immune checkpoint inhibitors by treating mice bearing PDGF-B; H3.e27M; p53 deficient tumors with vehicle, TNFa or LT-bRag and monitoring the effects on MHC-I expression, T cell activity, tumor apoptosis, and survival rates.
+6. Exploring alternative approaches if initial results do not validate the relationship between TP53 and MHC-I in human pHGGs, such as combining radiation with TNFa/LT-bRag and immune checkpoint inhibitors to enhance immune responses to tumors.
+7. Sharing data generated from RNAseq of DIPG mouse models or brainstem progenitors expressing various genetic alterations relevant to childhood glioma biology, as well as gene expression data from murine medulloblastoma models in NCBI's GEO repository upon publication.
+8. Sharing materials and reagents related to their research, including cell lines, vectors, mice, sections of tumors, etc., which have been used by other investigators resulting in new knowledge or publications.
+9. Sharing protocols associated with their materials and reagents for use by other labs.

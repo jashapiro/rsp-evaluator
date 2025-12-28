@@ -1,0 +1,5 @@
+Materials and Reagents: 
+Both labs readily share materials and reagents related to their research (murine cell lines, vectors, mice, sections of tumors, etc.). These resources have already been used by other investigators resulting in new knowledge and/or publications. Our lab shares early passage cell-lines derived from our tumor models and expression of the various oncogenes used to induce tumorigenesis is confirmed by our lab prior to distribution either by RNAseq or DNA Exome analysis or by PCR. Our collaborating lab shares frozen tumor cells from our Myc/DNp53 (MP) and Myc/Gfi1 (MG) tumor models, as well as from patient derived xenografts established in our lab. These can be orthotopically transplanted into mice to regenerate these models in other labs. Any new models or vectors developed during the course of the proposed studies will be shared with other labs as soon as the work is published.
+
+Protocols: 
+Both labs readily share protocols associated with their materials and reagents, and will continue to do so in the context of the studies proposed here.

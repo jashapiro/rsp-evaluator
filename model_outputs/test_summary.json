@@ -1,0 +1,296 @@
+{
+  "timestamp": "2025-12-28T12:38:37.841448",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "models_tested": [
+    "qwen2.5:32b",
+    "llama3.1:8b",
+    "gemma2:27b",
+    "gemma2:9b",
+    "mistral-small:24b",
+    "mistral:7b",
+    "phi3:medium",
+    "phi3:mini",
+    "granite4:small-h",
+    "granite4:3b",
+    "granite3.3:8b",
+    "granite3.3:2b",
+    "command-r:35b",
+    "command-r7b:7b",
+    "deepseek-r1:14b",
+    "solar:10.7b"
+  ],
+  "results": {
+    "qwen2.5:32b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 286.4960570335388
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 167.06643319129944
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 639.8987998962402
+      }
+    ],
+    "llama3.1:8b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 51.26394438743591
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 40.82891893386841
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 144.37044882774353
+      }
+    ],
+    "gemma2:27b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 126.04815101623535
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 112.69598412513733
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 359.04944610595703
+      }
+    ],
+    "gemma2:9b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 58.104814767837524
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 48.8906672000885
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 158.80096411705017
+      }
+    ],
+    "mistral-small:24b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 183.85980916023254
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 108.528165102005
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 426.64914083480835
+      }
+    ],
+    "mistral:7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 50.47280216217041
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 50.85895395278931
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 157.37347102165222
+      }
+    ],
+    "phi3:medium": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 97.34174823760986
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 77.75517892837524
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 308.6664819717407
+      }
+    ],
+    "phi3:mini": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 49.06278705596924
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 34.303061962127686
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 172.16284489631653
+      }
+    ],
+    "granite4:small-h": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 105.80799627304077
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 50.9041748046875
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 214.54090023040771
+      }
+    ],
+    "granite4:3b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 38.82010293006897
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 30.788788318634033
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 127.3275978565216
+      }
+    ],
+    "granite3.3:8b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 85.94663119316101
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 58.19643497467041
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 262.19229006767273
+      }
+    ],
+    "granite3.3:2b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 47.63975977897644
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 30.372212886810303
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 124.22263598442078
+      }
+    ],
+    "command-r:35b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 162.11467123031616
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 125.66650009155273
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 483.92203283309937
+      }
+    ],
+    "command-r7b:7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 65.66186904907227
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 45.13288497924805
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 155.89484906196594
+      }
+    ],
+    "deepseek-r1:14b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 148.94522786140442
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 105.64045095443726
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 416.61733388900757
+      }
+    ],
+    "solar:10.7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 31.961834192276
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 34.104471921920776
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 89.14494013786316
+      }
+    ]
+  }
+}

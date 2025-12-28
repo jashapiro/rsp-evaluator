@@ -1,0 +1,28 @@
+{
+  "model": "gemma2:27b",
+  "timestamp": "2025-12-28T11:14:53.431223",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "results": [
+    {
+      "task": "summarize",
+      "success": true,
+      "elapsed_time": 126.04815101623535,
+      "output_file": "model_outputs/gemma2_27b/summarize_output.md",
+      "error": null
+    },
+    {
+      "task": "extract",
+      "success": true,
+      "elapsed_time": 112.69598412513733,
+      "output_file": "model_outputs/gemma2_27b/extract_output.md",
+      "error": null
+    },
+    {
+      "task": "eval",
+      "success": true,
+      "elapsed_time": 359.04944610595703,
+      "output_file": "model_outputs/gemma2_27b/evaluation_output.md",
+      "error": null
+    }
+  ]
+}

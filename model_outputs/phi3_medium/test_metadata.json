@@ -1,0 +1,28 @@
+{
+  "model": "phi3:medium",
+  "timestamp": "2025-12-28T11:43:40.737171",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "results": [
+    {
+      "task": "summarize",
+      "success": true,
+      "elapsed_time": 97.34174823760986,
+      "output_file": "model_outputs/phi3_medium/summarize_output.md",
+      "error": null
+    },
+    {
+      "task": "extract",
+      "success": true,
+      "elapsed_time": 77.75517892837524,
+      "output_file": "model_outputs/phi3_medium/extract_output.md",
+      "error": null
+    },
+    {
+      "task": "eval",
+      "success": true,
+      "elapsed_time": 308.6664819717407,
+      "output_file": "model_outputs/phi3_medium/evaluation_output.md",
+      "error": null
+    }
+  ]
+}
