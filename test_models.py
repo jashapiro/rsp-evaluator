@@ -79,13 +79,24 @@ def get_recommended_models_to_test(
     """Get recommended models that are already installed."""
     models_to_test = []
     for model, _ in recommended_models:
-        # Check if model is installed (exact match or base name match)
-        base_name = model.split(":")[0]
-        for installed in installed_models:
-            if model == installed or base_name == installed.split(":")[0]:
-                # Use the installed version name
-                models_to_test.append(installed)
-                break
+        # Check if model is installed
+        # If recommended model has a specific tag (e.g., qwen2.5:32b), require exact match
+        # If no tag specified, match by base name
+        if ":" in model:
+            # Exact tag specified - require exact match
+            recommended_base, recommended_tag = model.split(":", 1)
+            for installed in installed_models:
+                installed_base = installed.split(":")[0]
+                installed_tag = installed.split(":", 1)[1] if ":" in installed else "latest"
+                if recommended_base == installed_base and recommended_tag == installed_tag:
+                    models_to_test.append(installed)
+                    break
+        else:
+            # No tag specified - match any version of this model
+            for installed in installed_models:
+                if model == installed.split(":")[0]:
+                    models_to_test.append(installed)
+                    break
     return models_to_test
 
 
@@ -107,13 +118,47 @@ def pull_model(model: str) -> bool:
 
 def ensure_model_available(model: str, installed_models: list[str]) -> bool:
     """Ensure a model is available, pulling if necessary."""
-    # Check if already installed (exact match or base name match)
-    for installed in installed_models:
-        if model == installed or model.split(":")[0] == installed.split(":")[0]:
-            return True
+    # Check if already installed with exact tag match
+    if ":" in model:
+        model_base, model_tag = model.split(":", 1)
+        for installed in installed_models:
+            installed_base = installed.split(":")[0]
+            installed_tag = installed.split(":", 1)[1] if ":" in installed else "latest"
+            if model_base == installed_base and model_tag == installed_tag:
+                return True
+    else:
+        # No tag specified - match any version
+        for installed in installed_models:
+            if model == installed.split(":")[0]:
+                return True
 
     # Try to pull the model
     return pull_model(model)
+
+
+def check_completed_tasks(output_dir: Path, skip_eval: bool = False) -> dict[str, bool]:
+    """Check which tasks have already been completed for a model.
+
+    Returns a dict with task names as keys and completion status as values.
+    A task is considered complete if its output file exists and has content.
+    """
+    tasks = {
+        "summarize": output_dir / "summarize_output.md",
+        "extract": output_dir / "extract_output.md",
+    }
+    if not skip_eval:
+        tasks["eval"] = output_dir / "evaluation_output.md"
+
+    completed = {}
+    for task, output_file in tasks.items():
+        # Check if file exists and has content (more than just whitespace)
+        if output_file.exists():
+            content = output_file.read_text().strip()
+            completed[task] = len(content) > 0
+        else:
+            completed[task] = False
+
+    return completed
 
 
 def run_summarize(
@@ -316,13 +361,29 @@ def test_model(
     rubric_path: Path,
     output_base: Path,
     verbose: bool = False,
-    skip_eval: bool = False
-) -> list[TestResult]:
-    """Run all tests for a single model."""
+    skip_eval: bool = False,
+    force: bool = False
+) -> tuple[list[TestResult], bool]:
+    """Run all tests for a single model.
+
+    Returns a tuple of (results, was_skipped) where was_skipped is True if
+    all tasks were already completed.
+    """
     # Create model output directory (sanitize model name for filesystem)
     model_dir_name = model.replace(":", "_").replace("/", "_")
     output_dir = output_base / model_dir_name
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Check for already completed tasks
+    completed = check_completed_tasks(output_dir, skip_eval)
+
+    # If all tasks are completed and not forcing, skip this model
+    if not force and all(completed.values()) and len(completed) > 0:
+        print(f"\n{'=' * 60}")
+        print(f"SKIPPING model: {model} (all tasks already completed)")
+        print(f"  Use --force to re-run tests")
+        print(f"{'=' * 60}")
+        return [], True
 
     results = []
 
@@ -332,32 +393,41 @@ def test_model(
     print(f"{'=' * 60}")
 
     # Test 1: Summarize
-    print("\n[1/3] Running summarize task...")
-    result = run_summarize(target_file, model, output_dir, verbose)
-    results.append(result)
-    if result.success:
-        print(f"  SUCCESS in {result.elapsed_time:.1f}s")
+    if not force and completed.get("summarize", False):
+        print("\n[1/3] Summarize task already completed, skipping...")
     else:
-        print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
-
-    # Test 2: Extract
-    print("\n[2/3] Running extract task...")
-    result = run_extract(target_file, model, output_dir, verbose)
-    results.append(result)
-    if result.success:
-        print(f"  SUCCESS in {result.elapsed_time:.1f}s")
-    else:
-        print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
-
-    # Test 3: Full evaluation
-    if not skip_eval:
-        print("\n[3/3] Running full evaluation task...")
-        result = run_eval(target_file, model, output_dir, policy_path, rubric_path, verbose)
+        print("\n[1/3] Running summarize task...")
+        result = run_summarize(target_file, model, output_dir, verbose)
         results.append(result)
         if result.success:
             print(f"  SUCCESS in {result.elapsed_time:.1f}s")
         else:
             print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
+
+    # Test 2: Extract
+    if not force and completed.get("extract", False):
+        print("\n[2/3] Extract task already completed, skipping...")
+    else:
+        print("\n[2/3] Running extract task...")
+        result = run_extract(target_file, model, output_dir, verbose)
+        results.append(result)
+        if result.success:
+            print(f"  SUCCESS in {result.elapsed_time:.1f}s")
+        else:
+            print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
+
+    # Test 3: Full evaluation
+    if not skip_eval:
+        if not force and completed.get("eval", False):
+            print("\n[3/3] Evaluation task already completed, skipping...")
+        else:
+            print("\n[3/3] Running full evaluation task...")
+            result = run_eval(target_file, model, output_dir, policy_path, rubric_path, verbose)
+            results.append(result)
+            if result.success:
+                print(f"  SUCCESS in {result.elapsed_time:.1f}s")
+            else:
+                print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
     else:
         print("\n[3/3] Skipping full evaluation (--skip-eval)")
 
@@ -382,10 +452,10 @@ def test_model(
     with open(metadata_file, "w") as f:
         json.dump(metadata, f, indent=2)
 
-    return results
+    return results, False
 
 
-def print_summary(all_results: dict[str, list[TestResult]]):
+def print_summary(all_results: dict[str, list[TestResult]], skipped_models: list[str]):
     """Print a summary table of all results."""
     print("\n" + "=" * 80)
     print("SUMMARY")
@@ -405,6 +475,9 @@ def print_summary(all_results: dict[str, list[TestResult]]):
             row += f" {status:<15}"
         print(row)
 
+    if skipped_models:
+        print(f"\nSkipped (already completed): {', '.join(skipped_models)}")
+
     print("\n" + "=" * 80)
 
 
@@ -414,8 +487,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Test installed recommended models
+  # Test installed recommended models (skips already completed)
   python test_models.py
+
+  # Force re-run all tests even if completed
+  python test_models.py --force
 
   # Download missing models and test all recommended
   python test_models.py --download
@@ -480,6 +556,12 @@ Examples:
         "--list-models",
         action="store_true",
         help="List installed and recommended models, then exit"
+    )
+    parser.add_argument(
+        "--force",
+        "-f",
+        action="store_true",
+        help="Force re-run tests even if outputs already exist"
     )
 
     args = parser.parse_args()
@@ -560,20 +642,25 @@ Examples:
 
     # Run tests
     all_results = {}
+    skipped_models = []
     for model in available_models:
-        results = test_model(
+        results, was_skipped = test_model(
             model=model,
             target_file=args.target,
             policy_path=args.policy,
             rubric_path=args.rubric,
             output_base=args.output_dir,
             verbose=args.verbose,
-            skip_eval=args.skip_eval
+            skip_eval=args.skip_eval,
+            force=args.force
         )
-        all_results[model] = results
+        if was_skipped:
+            skipped_models.append(model)
+        else:
+            all_results[model] = results
 
     # Print summary
-    print_summary(all_results)
+    print_summary(all_results, skipped_models)
 
     # Save overall summary
     summary_file = args.output_dir / "test_summary.json"
