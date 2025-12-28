@@ -16,6 +16,7 @@ Models are selected based on their suitability for:
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -27,6 +28,64 @@ from typing import Optional
 
 # Path to the recommended models configuration
 RECOMMENDED_MODELS_FILE = Path(__file__).parent / "recommended_models.toml"
+
+# Reference file for extraction comparison
+REFERENCE_EXTRACT_FILE = Path(__file__).parent / "model_outputs" / "extracted_sharing_plan.md"
+
+
+def normalize_text(text: str) -> str:
+    """Normalize text by removing extra whitespace for comparison."""
+    # Remove extra whitespace and normalize line endings
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
+
+def compare_extraction(extracted_file: Path, reference_file: Path) -> dict:
+    """Compare extracted text to reference, excluding whitespace differences.
+
+    Returns a dict with:
+    - match: bool indicating if content matches (ignoring whitespace)
+    - similarity: float 0-1 indicating character-level similarity
+    - diff_chars: number of different characters
+    - extracted_len: length of normalized extracted text
+    - reference_len: length of normalized reference text
+    """
+    if not extracted_file.exists():
+        return {"match": False, "error": "Extracted file not found"}
+    if not reference_file.exists():
+        return {"match": False, "error": "Reference file not found"}
+
+    extracted = normalize_text(extracted_file.read_text())
+    reference = normalize_text(reference_file.read_text())
+
+    # Exact match after normalization
+    match = extracted == reference
+
+    # Calculate character-level similarity using longest common subsequence ratio
+    # Simpler approach: count matching characters at each position
+    max_len = max(len(extracted), len(reference))
+    if max_len == 0:
+        return {"match": True, "similarity": 1.0, "diff_chars": 0,
+                "extracted_len": 0, "reference_len": 0}
+
+    # Use difflib for better similarity calculation
+    from difflib import SequenceMatcher
+    matcher = SequenceMatcher(None, extracted, reference)
+    similarity = matcher.ratio()
+
+    # Count actual character differences
+    diff_chars = abs(len(extracted) - len(reference))
+    for op, i1, i2, j1, j2 in matcher.get_opcodes():
+        if op != 'equal':
+            diff_chars += max(i2 - i1, j2 - j1)
+
+    return {
+        "match": match,
+        "similarity": round(similarity, 4),
+        "diff_chars": diff_chars,
+        "extracted_len": len(extracted),
+        "reference_len": len(reference)
+    }
 
 
 def load_recommended_models() -> list[tuple[str, str]]:
@@ -50,6 +109,7 @@ class TestResult:
     elapsed_time: float
     output_file: Optional[Path] = None
     error: Optional[str] = None
+    extraction_comparison: Optional[dict] = None  # For extract task only
 
 
 def get_installed_models() -> list[str]:
@@ -136,18 +196,35 @@ def ensure_model_available(model: str, installed_models: list[str]) -> bool:
     return pull_model(model)
 
 
-def check_completed_tasks(output_dir: Path, skip_eval: bool = False) -> dict[str, bool]:
+def get_output_filename(base_name: str, run: Optional[int] = None) -> str:
+    """Get output filename with optional run suffix.
+
+    Args:
+        base_name: Base filename like 'summarize_output.md'
+        run: Optional run number (1, 2, 3, etc.)
+
+    Returns:
+        Filename like 'summarize_output_run1.md' or 'summarize_output.md' if run is None
+    """
+    if run is None:
+        return base_name
+    stem = base_name.rsplit('.', 1)[0]
+    ext = base_name.rsplit('.', 1)[1] if '.' in base_name else ''
+    return f"{stem}_run{run}.{ext}" if ext else f"{stem}_run{run}"
+
+
+def check_completed_tasks(output_dir: Path, skip_eval: bool = False, run: Optional[int] = None) -> dict[str, bool]:
     """Check which tasks have already been completed for a model.
 
     Returns a dict with task names as keys and completion status as values.
     A task is considered complete if its output file exists and has content.
     """
     tasks = {
-        "summarize": output_dir / "summarize_output.md",
-        "extract": output_dir / "extract_output.md",
+        "summarize": output_dir / get_output_filename("summarize_output.md", run),
+        "extract": output_dir / get_output_filename("extract_output.md", run),
     }
     if not skip_eval:
-        tasks["eval"] = output_dir / "evaluation_output.md"
+        tasks["eval"] = output_dir / get_output_filename("evaluation_output.md", run)
 
     completed = {}
     for task, output_file in tasks.items():
@@ -165,10 +242,11 @@ def run_summarize(
     target_file: Path,
     model: str,
     output_dir: Path,
-    verbose: bool = False
+    verbose: bool = False,
+    run: Optional[int] = None
 ) -> TestResult:
     """Run the summarize task."""
-    output_file = output_dir / "summarize_output.md"
+    output_file = output_dir / get_output_filename("summarize_output.md", run)
     start_time = time.time()
 
     try:
@@ -228,10 +306,11 @@ def run_extract(
     target_file: Path,
     model: str,
     output_dir: Path,
-    verbose: bool = False
+    verbose: bool = False,
+    run: Optional[int] = None
 ) -> TestResult:
     """Run the extract task."""
-    output_file = output_dir / "extract_output.md"
+    output_file = output_dir / get_output_filename("extract_output.md", run)
     start_time = time.time()
 
     try:
@@ -254,12 +333,15 @@ def run_extract(
         elapsed = time.time() - start_time
 
         if result.returncode == 0 and output_file.exists():
+            # Compare extraction to reference
+            comparison = compare_extraction(output_file, REFERENCE_EXTRACT_FILE)
             return TestResult(
                 model=model,
                 task="extract",
                 success=True,
                 elapsed_time=elapsed,
-                output_file=output_file
+                output_file=output_file,
+                extraction_comparison=comparison
             )
         else:
             return TestResult(
@@ -293,10 +375,11 @@ def run_eval(
     output_dir: Path,
     policy_path: Path,
     rubric_path: Path,
-    verbose: bool = False
+    verbose: bool = False,
+    run: Optional[int] = None
 ) -> TestResult:
     """Run the full evaluation task."""
-    output_file = output_dir / "evaluation_output.md"
+    output_file = output_dir / get_output_filename("evaluation_output.md", run)
     start_time = time.time()
 
     try:
@@ -362,7 +445,8 @@ def test_model(
     output_base: Path,
     verbose: bool = False,
     skip_eval: bool = False,
-    force: bool = False
+    force: bool = False,
+    run: Optional[int] = None
 ) -> tuple[list[TestResult], bool]:
     """Run all tests for a single model.
 
@@ -375,12 +459,14 @@ def test_model(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Check for already completed tasks
-    completed = check_completed_tasks(output_dir, skip_eval)
+    completed = check_completed_tasks(output_dir, skip_eval, run)
+
+    run_label = f" (run {run})" if run else ""
 
     # If all tasks are completed and not forcing, skip this model
     if not force and all(completed.values()) and len(completed) > 0:
         print(f"\n{'=' * 60}")
-        print(f"SKIPPING model: {model} (all tasks already completed)")
+        print(f"SKIPPING model: {model}{run_label} (all tasks already completed)")
         print(f"  Use --force to re-run tests")
         print(f"{'=' * 60}")
         return [], True
@@ -388,7 +474,7 @@ def test_model(
     results = []
 
     print(f"\n{'=' * 60}")
-    print(f"Testing model: {model}")
+    print(f"Testing model: {model}{run_label}")
     print(f"Output directory: {output_dir}")
     print(f"{'=' * 60}")
 
@@ -397,7 +483,7 @@ def test_model(
         print("\n[1/3] Summarize task already completed, skipping...")
     else:
         print("\n[1/3] Running summarize task...")
-        result = run_summarize(target_file, model, output_dir, verbose)
+        result = run_summarize(target_file, model, output_dir, verbose, run)
         results.append(result)
         if result.success:
             print(f"  SUCCESS in {result.elapsed_time:.1f}s")
@@ -409,10 +495,13 @@ def test_model(
         print("\n[2/3] Extract task already completed, skipping...")
     else:
         print("\n[2/3] Running extract task...")
-        result = run_extract(target_file, model, output_dir, verbose)
+        result = run_extract(target_file, model, output_dir, verbose, run)
         results.append(result)
         if result.success:
-            print(f"  SUCCESS in {result.elapsed_time:.1f}s")
+            sim = result.extraction_comparison.get('similarity', 0) if result.extraction_comparison else 0
+            match = result.extraction_comparison.get('match', False) if result.extraction_comparison else False
+            match_str = "EXACT MATCH" if match else f"similarity={sim:.1%}"
+            print(f"  SUCCESS in {result.elapsed_time:.1f}s ({match_str})")
         else:
             print(f"  FAILED: {result.error[:100] if result.error else 'Unknown error'}")
 
@@ -422,7 +511,7 @@ def test_model(
             print("\n[3/3] Evaluation task already completed, skipping...")
         else:
             print("\n[3/3] Running full evaluation task...")
-            result = run_eval(target_file, model, output_dir, policy_path, rubric_path, verbose)
+            result = run_eval(target_file, model, output_dir, policy_path, rubric_path, verbose, run)
             results.append(result)
             if result.success:
                 print(f"  SUCCESS in {result.elapsed_time:.1f}s")
@@ -434,6 +523,7 @@ def test_model(
     # Save metadata
     metadata = {
         "model": model,
+        "run": run,
         "timestamp": datetime.now().isoformat(),
         "target_file": str(target_file),
         "results": [
@@ -442,43 +532,60 @@ def test_model(
                 "success": r.success,
                 "elapsed_time": r.elapsed_time,
                 "output_file": str(r.output_file) if r.output_file else None,
-                "error": r.error
+                "error": r.error,
+                "extraction_comparison": r.extraction_comparison
             }
             for r in results
         ]
     }
 
-    metadata_file = output_dir / "test_metadata.json"
+    metadata_suffix = f"_run{run}" if run else ""
+    metadata_file = output_dir / f"test_metadata{metadata_suffix}.json"
     with open(metadata_file, "w") as f:
         json.dump(metadata, f, indent=2)
 
     return results, False
 
 
-def print_summary(all_results: dict[str, list[TestResult]], skipped_models: list[str]):
+def print_summary(all_results: dict[str, list[TestResult]], skipped_models: list[str], run: Optional[int] = None):
     """Print a summary table of all results."""
-    print("\n" + "=" * 80)
-    print("SUMMARY")
-    print("=" * 80)
+    run_label = f" (Run {run})" if run else ""
+    print("\n" + "=" * 100)
+    print(f"SUMMARY{run_label}")
+    print("=" * 100)
 
     # Header
-    print(f"\n{'Model':<25} {'Summarize':<15} {'Extract':<15} {'Eval':<15}")
-    print("-" * 70)
+    print(f"\n{'Model':<25} {'Summarize':<12} {'Extract':<12} {'Similarity':<12} {'Eval':<12}")
+    print("-" * 90)
 
     for model, results in all_results.items():
         row = f"{model:<25}"
+        extract_sim = ""
         for result in results:
             if result.success:
                 status = f"OK ({result.elapsed_time:.0f}s)"
             else:
                 status = "FAILED"
-            row += f" {status:<15}"
+
+            if result.task == "extract" and result.extraction_comparison:
+                comp = result.extraction_comparison
+                if comp.get("match"):
+                    extract_sim = "100% MATCH"
+                else:
+                    extract_sim = f"{comp.get('similarity', 0):.1%}"
+
+            if result.task == "summarize":
+                row += f" {status:<12}"
+            elif result.task == "extract":
+                row += f" {status:<12} {extract_sim:<12}"
+            elif result.task == "eval":
+                row += f" {status:<12}"
         print(row)
 
     if skipped_models:
         print(f"\nSkipped (already completed): {', '.join(skipped_models)}")
 
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 100)
 
 
 def main():
@@ -563,6 +670,13 @@ Examples:
         action="store_true",
         help="Force re-run tests even if outputs already exist"
     )
+    parser.add_argument(
+        "--run",
+        "-r",
+        type=int,
+        default=None,
+        help="Run number for multiple test runs (e.g., --run 1, --run 2)"
+    )
 
     args = parser.parse_args()
 
@@ -623,9 +737,12 @@ Examples:
             print(f"  - {model}: {desc}")
         sys.exit(1)
 
+    run_label = f" (Run {args.run})" if args.run else ""
     print(f"\nModels to test: {', '.join(models_to_test)}")
     print(f"Target document: {args.target}")
     print(f"Output directory: {args.output_dir}")
+    if args.run:
+        print(f"Run number: {args.run}")
 
     # Create output directory
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -652,7 +769,8 @@ Examples:
             output_base=args.output_dir,
             verbose=args.verbose,
             skip_eval=args.skip_eval,
-            force=args.force
+            force=args.force,
+            run=args.run
         )
         if was_skipped:
             skipped_models.append(model)
@@ -660,12 +778,14 @@ Examples:
             all_results[model] = results
 
     # Print summary
-    print_summary(all_results, skipped_models)
+    print_summary(all_results, skipped_models, args.run)
 
     # Save overall summary
-    summary_file = args.output_dir / "test_summary.json"
+    summary_suffix = f"_run{args.run}" if args.run else ""
+    summary_file = args.output_dir / f"test_summary{summary_suffix}.json"
     summary_data = {
         "timestamp": datetime.now().isoformat(),
+        "run": args.run,
         "target_file": str(args.target),
         "models_tested": list(all_results.keys()),
         "results": {
@@ -673,7 +793,8 @@ Examples:
                 {
                     "task": r.task,
                     "success": r.success,
-                    "elapsed_time": r.elapsed_time
+                    "elapsed_time": r.elapsed_time,
+                    "extraction_comparison": r.extraction_comparison
                 }
                 for r in results
             ]
