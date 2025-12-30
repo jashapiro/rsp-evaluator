@@ -1,0 +1,7 @@
+This research plan focuses on investigating the relationship between p53 status and Major Histocompatibility Complex (MHC) Class I expression in pediatric high-grade gliomas (pHGGs). The study aims to determine if activators of Tumor Necrosis Factor Receptor (TNFR) signaling can enhance MHC-I expression on pHGG cells and sensitize them to immune checkpoint inhibitors.
+
+Aim 1 will analyze whether the correlation between p53 status and surface MHC-I observed in medulloblastoma models holds true for pHGGs. The study will examine DIPG (diffuse intrinsic pontine glioma) mouse models with PDGF-B, H3.K27M, and either PTEN loss or p53 loss.
+
+Aim 2 involves testing whether TNFα or LT-βRag can induce MHC-I expression on DIPG tumor cells and enhance their recognition by allogeneic CD8+ T cells. The study will also determine if pretreatment with TNFR ligands sensitizes pHGGs to immune checkpoint inhibitors, such as anti-PD1 or anti-CTLA4 antibodies.
+
+The research plan includes sharing data and resources, such as RNAseq data, cell lines, vectors, mice, tumor sections, frozen tumor cells, and protocols with the scientific community upon publication. This will facilitate collaboration and further investigation into pHGG immunotherapy strategies.

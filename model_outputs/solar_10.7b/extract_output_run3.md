@@ -1,0 +1,7 @@
+Resource Sharing:
+
+Data Sharing: The researchers have previously shared data from RNAseq experiments related to DIPG mouse models or brainstem progenitors with genetic alterations relevant to childhood glioma biology. These data are available on NCBI's GEO repository under identifiers GSE125627, GSE98765, GSE34126, and GSE123871. For the current project, generated data will be made publicly accessible upon publication.
+
+Materials and Reagents: Both research labs readily share materials and reagents related to their studies, such as murine cell lines, vectors, mice, tumor sections, etc. These resources have been used by other investigators for new discoveries and publications. The lab shares early passage cell-lines from tumor models with confirmed oncogene expression through RNAseq, DNA Exome analysis, or PCR. The collaborating lab distributes frozen tumor cells from Myc/DNp53 (MP) and Myc/Gfi1 (MG) tumor models as well as patient derived xenografts established in their lab. These can be transplanted into mice to recreate the models in other labs. Newly developed models or vectors during the proposed studies will also be shared upon publication.
+
+Protocols: Both research teams readily share protocols associated with their materials and reagents, and they will continue to do so for the proposed studies.

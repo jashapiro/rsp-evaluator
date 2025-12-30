@@ -1,0 +1,38 @@
+{
+  "model": "mistral:7b",
+  "run": 2,
+  "timestamp": "2025-12-28T15:00:12.993017",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "results": [
+    {
+      "task": "summarize",
+      "success": true,
+      "elapsed_time": 59.25419020652771,
+      "output_file": "model_outputs/mistral_7b/summarize_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    },
+    {
+      "task": "extract",
+      "success": true,
+      "elapsed_time": 52.07478594779968,
+      "output_file": "model_outputs/mistral_7b/extract_output_run2.md",
+      "error": null,
+      "extraction_comparison": {
+        "match": true,
+        "similarity": 1.0,
+        "diff_chars": 0,
+        "extracted_len": 1830,
+        "reference_len": 1830
+      }
+    },
+    {
+      "task": "eval",
+      "success": true,
+      "elapsed_time": 182.42818784713745,
+      "output_file": "model_outputs/mistral_7b/evaluation_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    }
+  ]
+}

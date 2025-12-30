@@ -1,0 +1,468 @@
+{
+  "timestamp": "2025-12-28T19:32:55.980004",
+  "run": 3,
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "models_tested": [
+    "qwen2.5:32b",
+    "qwen2.5:7b",
+    "llama3.1:8b",
+    "gemma2:27b",
+    "gemma2:9b",
+    "mistral-small:24b",
+    "mistral:7b",
+    "phi3:medium",
+    "phi3:mini",
+    "granite4:small-h",
+    "granite4:3b",
+    "granite3.3:8b",
+    "granite3.3:2b",
+    "command-r:35b",
+    "command-r7b:7b",
+    "deepseek-r1:14b",
+    "solar:10.7b"
+  ],
+  "results": {
+    "qwen2.5:32b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 262.096559047699,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 159.24951601028442,
+        "extraction_comparison": {
+          "match": true,
+          "similarity": 1.0,
+          "diff_chars": 0,
+          "extracted_len": 1830,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 668.7142021656036,
+        "extraction_comparison": null
+      }
+    ],
+    "qwen2.5:7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 74.68823909759521,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 40.26918697357178,
+        "extraction_comparison": {
+          "match": true,
+          "similarity": 1.0,
+          "diff_chars": 0,
+          "extracted_len": 1830,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 172.71885704994202,
+        "extraction_comparison": null
+      }
+    ],
+    "llama3.1:8b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 56.13709998130798,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 40.92599296569824,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.93,
+          "diff_chars": 284,
+          "extracted_len": 1798,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 153.26291608810425,
+        "extraction_comparison": null
+      }
+    ],
+    "gemma2:27b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 127.61606121063232,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 111.6236207485199,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9929,
+          "diff_chars": 52,
+          "extracted_len": 1856,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 351.8827669620514,
+        "extraction_comparison": null
+      }
+    ],
+    "gemma2:9b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 56.82813596725464,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 49.46550798416138,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.99,
+          "diff_chars": 74,
+          "extracted_len": 1867,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 166.76820468902588,
+        "extraction_comparison": null
+      }
+    ],
+    "mistral-small:24b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 199.60364294052124,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 108.48668479919434,
+        "extraction_comparison": {
+          "match": true,
+          "similarity": 1.0,
+          "diff_chars": 0,
+          "extracted_len": 1830,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 482.91180396080017,
+        "extraction_comparison": null
+      }
+    ],
+    "mistral:7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 58.504274129867554,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 50.66723704338074,
+        "extraction_comparison": {
+          "match": true,
+          "similarity": 1.0,
+          "diff_chars": 0,
+          "extracted_len": 1830,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 174.58760595321655,
+        "extraction_comparison": null
+      }
+    ],
+    "phi3:medium": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 109.60491991043091,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 78.29275918006897,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9967,
+          "diff_chars": 12,
+          "extracted_len": 1834,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 318.85042810440063,
+        "extraction_comparison": null
+      }
+    ],
+    "phi3:mini": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 46.60377311706543,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 34.36882710456848,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9984,
+          "diff_chars": 6,
+          "extracted_len": 1832,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 171.29097890853882,
+        "extraction_comparison": null
+      }
+    ],
+    "granite4:small-h": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 78.60592675209045,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 51.08868408203125,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.7392,
+          "diff_chars": 1514,
+          "extracted_len": 1073,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 198.9579141139984,
+        "extraction_comparison": null
+      }
+    ],
+    "granite4:3b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 37.85128617286682,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 30.64230990409851,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9984,
+          "diff_chars": 6,
+          "extracted_len": 1832,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 122.9255850315094,
+        "extraction_comparison": null
+      }
+    ],
+    "granite3.3:8b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 85.73161602020264,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 58.74836301803589,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9694,
+          "diff_chars": 112,
+          "extracted_len": 1832,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 234.0135588645935,
+        "extraction_comparison": null
+      }
+    ],
+    "granite3.3:2b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 44.26077103614807,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 31.22672200202942,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9997,
+          "diff_chars": 2,
+          "extracted_len": 1831,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 110.07056307792664,
+        "extraction_comparison": null
+      }
+    ],
+    "command-r:35b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 173.24480295181274,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 127.5557062625885,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.9951,
+          "diff_chars": 36,
+          "extracted_len": 1848,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 477.29823112487793,
+        "extraction_comparison": null
+      }
+    ],
+    "command-r7b:7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 70.40713405609131,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 45.432286977767944,
+        "extraction_comparison": {
+          "match": true,
+          "similarity": 1.0,
+          "diff_chars": 0,
+          "extracted_len": 1830,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 164.93711519241333,
+        "extraction_comparison": null
+      }
+    ],
+    "deepseek-r1:14b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 164.05624222755432,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 97.88396000862122,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.994,
+          "diff_chars": 44,
+          "extracted_len": 1852,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 400.8803799152374,
+        "extraction_comparison": null
+      }
+    ],
+    "solar:10.7b": [
+      {
+        "task": "summarize",
+        "success": true,
+        "elapsed_time": 34.66512989997864,
+        "extraction_comparison": null
+      },
+      {
+        "task": "extract",
+        "success": true,
+        "elapsed_time": 33.07165503501892,
+        "extraction_comparison": {
+          "match": false,
+          "similarity": 0.3575,
+          "diff_chars": 1977,
+          "extracted_len": 1320,
+          "reference_len": 1830
+        }
+      },
+      {
+        "task": "eval",
+        "success": true,
+        "elapsed_time": 90.42872309684753,
+        "extraction_comparison": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "model": "granite3.3:8b",
+  "run": 2,
+  "timestamp": "2025-12-28T16:56:49.896856",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "results": [
+    {
+      "task": "summarize",
+      "success": true,
+      "elapsed_time": 111.85550689697266,
+      "output_file": "model_outputs/granite3.3_8b/summarize_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    },
+    {
+      "task": "extract",
+      "success": true,
+      "elapsed_time": 57.105550050735474,
+      "output_file": "model_outputs/granite3.3_8b/extract_output_run2.md",
+      "error": null,
+      "extraction_comparison": {
+        "match": false,
+        "similarity": 0.9694,
+        "diff_chars": 112,
+        "extracted_len": 1832,
+        "reference_len": 1830
+      }
+    },
+    {
+      "task": "eval",
+      "success": true,
+      "elapsed_time": 246.77338910102844,
+      "output_file": "model_outputs/granite3.3_8b/evaluation_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    }
+  ]
+}

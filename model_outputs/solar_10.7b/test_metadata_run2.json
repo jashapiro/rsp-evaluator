@@ -1,0 +1,38 @@
+{
+  "model": "solar:10.7b",
+  "run": 2,
+  "timestamp": "2025-12-28T17:31:13.585230",
+  "target_file": "grants/ALSF Redacted Grant for AI RSP Demo.docx",
+  "results": [
+    {
+      "task": "summarize",
+      "success": true,
+      "elapsed_time": 36.05214524269104,
+      "output_file": "model_outputs/solar_10.7b/summarize_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    },
+    {
+      "task": "extract",
+      "success": true,
+      "elapsed_time": 33.73132586479187,
+      "output_file": "model_outputs/solar_10.7b/extract_output_run2.md",
+      "error": null,
+      "extraction_comparison": {
+        "match": false,
+        "similarity": 0.384,
+        "diff_chars": 1907,
+        "extracted_len": 1363,
+        "reference_len": 1830
+      }
+    },
+    {
+      "task": "eval",
+      "success": true,
+      "elapsed_time": 113.54001379013062,
+      "output_file": "model_outputs/solar_10.7b/evaluation_output_run2.md",
+      "error": null,
+      "extraction_comparison": null
+    }
+  ]
+}
