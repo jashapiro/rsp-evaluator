@@ -84,13 +84,13 @@ def evaluate(
                     final_result = event["content"]
                     console.print(f"[bold green]Total time: {event['total_elapsed']:.2f}s[/bold green]")
 
-        output = f"\n{'=' * 70}\nDOCUMENT EVALUATION REPORT\n{'=' * 70}\n{final_result}\n{'=' * 70}\n"
+        header = f"# Evaluation of: {target_path.name}\n\n"
         if output_file:
-            Path(output_file).write_text(final_result)
+            Path(output_file).write_text(header + final_result)
             if verbose:
                 console.print(f"Evaluation written to: {output_file}")
         else:
-            console.print(output)
+            console.print(header + final_result)
 
     except Exception as e:
         console.print(f"[bold red]Error evaluating document:[/bold red] {e}")
