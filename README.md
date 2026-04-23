@@ -5,8 +5,8 @@ A tool to evaluate a Research Sharing Plan against a policy and rubric using a l
 ## Prerequisites
 
 - [Pixi](https://pixi.sh/) package manager — handles all software dependencies.
-- **Ollama backend** (default on Linux/Windows): [Ollama](https://ollama.com/) must be installed and running. The server needs to be running whenever you use the tool — look for the Ollama icon in the menu bar (Mac) or system tray (Windows).
 - **MLX backend** (default on Apple Silicon Mac): no additional software needed.
+- **Ollama backend** (default on Linux/Windows): [Ollama](https://ollama.com/) must be installed and running. The server needs to be running whenever you use the tool — look for the Ollama icon in the menu bar (Mac) or system tray (Windows). Mac users can also install Ollama and use it with `--backend ollama` if preferred.
 
 ## Setup
 

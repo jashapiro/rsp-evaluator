@@ -248,7 +248,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/ncurses-6.5-h5e97a16_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/nspr-4.38-heaf21c2_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/nss-3.118-h1c710a3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/ollama-0.20.7-cpu_h23e2f3f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openjpeg-2.5.4-hd9e9057_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openssl-3.6.2-hd24854e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/packaging-26.1-pyhc364b38_0.conda
@@ -3140,17 +3139,6 @@ packages:
   purls: []
   size: 15051783
   timestamp: 1776260795878
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/ollama-0.20.7-cpu_h23e2f3f_0.conda
-  sha256: 6750395d4daadea530ece623e58a0dc3d8fd2847a0488fcc1248a791ba331b1c
-  md5: 00393717a7f036228b05f3890baa3942
-  depends:
-  - __osx >=11.0
-  - libcxx >=19
-  license: MIT
-  license_family: MIT
-  purls: []
-  size: 12005709
-  timestamp: 1776261010416
 - conda: https://conda.anaconda.org/conda-forge/win-64/ollama-0.20.7-cpu_hcb16b98_0.conda
   sha256: 2cc67203f581b91f1451c732e3b56b6e55343eb3e9e9ef0b949855118dbcc5de
   md5: 4862ab7dbdb16b504626abe6721fd4b7
