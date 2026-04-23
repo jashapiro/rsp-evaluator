@@ -47,13 +47,24 @@ def setup_ollama_llm(model_name: str = "llama3.2", verbose: bool = False) -> Oll
 def setup_mlx_llm(model_name: str, verbose: bool = False) -> BaseLLM:
     """Initialize MLX LLM (Apple Silicon only). Downloads model from HuggingFace Hub on first use."""
     try:
+        import logging
+        logging.getLogger("transformers").setLevel(logging.ERROR)
         from langchain_community.llms.mlx_pipeline import MLXPipeline
     except ImportError:
         print("mlx-lm is not installed. It should be installed automatically on osx-arm64 via pixi.")
         sys.exit(1)
 
-    if verbose:
-        print(f"Setting up MLX with model: {model_name}")
+    from huggingface_hub import snapshot_download
+
+    # Download with progress if not already cached
+    try:
+        snapshot_download(model_name, local_files_only=True)
+        if verbose:
+            print(f"Loading MLX model '{model_name}' from cache...")
+    except Exception:
+        print(f"Downloading MLX model '{model_name}' from HuggingFace Hub (this may take a while)...")
+        snapshot_download(model_name)
+        print(f"Model '{model_name}' ready.")
 
     return MLXPipeline.from_model_id(
         model_name,

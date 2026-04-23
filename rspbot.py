@@ -17,7 +17,7 @@ app = typer.Typer()
 
 
 @app.command()
-def eval(
+def evaluate(
     target_file: Path = typer.Argument(
         ..., help="Path to the document file to analyze (PDF or Word)"
     ),
