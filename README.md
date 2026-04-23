@@ -31,12 +31,12 @@ The RSP Evaluator can be used either through its command-line interface (CLI) or
 
 Run any command with `pixi run python rspbot.py <command>`.
 
-#### `eval`
+#### `evaluate`
 
 Evaluate a document against a policy and rubric.
 
 ```bash
-pixi run python rspbot.py eval /path/to/document.pdf [OPTIONS]
+pixi run python rspbot.py evaluate /path/to/document.pdf [OPTIONS]
 ```
 
 **Options:**
@@ -49,7 +49,7 @@ pixi run python rspbot.py eval /path/to/document.pdf [OPTIONS]
 
 **Example:**
 ```bash
-pixi run python rspbot.py eval my_grant_proposal.pdf -o evaluation_report.md
+pixi run python rspbot.py evaluate my_grant_proposal.pdf -o evaluation_report.md
 ```
 
 #### `summarize`
@@ -89,7 +89,7 @@ Default model: `mlx-community/Qwen3.6-35B-A3B-4bit`
 Models are specified as HuggingFace repository IDs and downloaded automatically on first use. Browse available models at [huggingface.co/mlx-community](https://huggingface.co/mlx-community).
 
 ```bash
-pixi run python rspbot.py eval doc.pdf --backend mlx --model mlx-community/Qwen3-14B-4bit
+pixi run python rspbot.py evaluate doc.pdf --backend mlx --model mlx-community/Qwen3-14B-4bit
 ```
 
 ### Ollama (Linux/Windows default)
@@ -99,7 +99,7 @@ Default model: `qwen3.6:35b`
 Models are pulled from Ollama automatically on first use. Browse available models at [ollama.com/library](https://ollama.com/library).
 
 ```bash
-pixi run python rspbot.py eval doc.pdf --backend ollama --model qwen2.5:7b
+pixi run python rspbot.py evaluate doc.pdf --backend ollama --model qwen2.5:7b
 ```
 
 ## Project Structure
