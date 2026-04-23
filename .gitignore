@@ -1,6 +1,7 @@
 # Project-specific ignores grants
 grants/*
 !grants/.gitkeep
+grant_evaluations/*
 
 
 # Byte-compiled / optimized / DLL files

@@ -4,35 +4,24 @@ A tool to evaluate a Research Sharing Plan against a policy and rubric using a l
 
 ## Prerequisites
 
-To get started, first download and install the following two tools:
+- [Pixi](https://pixi.sh/) package manager — handles all software dependencies.
+- **Ollama backend** (default on Linux/Windows): [Ollama](https://ollama.com/) must be installed and running. The server needs to be running whenever you use the tool — look for the Ollama icon in the menu bar (Mac) or system tray (Windows).
+- **MLX backend** (default on Apple Silicon Mac): no additional software needed.
 
-- [Pixi](https://pixi.sh/) package manager
-  - This will handle software dependencies and allow some shortcuts.
-  - Follow the instructions on the [Pixi website](https://pixi.sh/) to install it.
-- [Ollama](https://ollama.com/)
-  - This is the engine that will run the local LLM models.
-  It needs to be running for the evaluator to work.
-  - Follow the instructions on the [Ollama website](https://ollama.com/) to install it.
-  
-  
 ## Setup
 
-1.  **Install dependencies**:
+1. **Install dependencies**:
     ```bash
     pixi install
     ```
 
-2.  **Set up and start Ollama with the default model**:
+2. **Start Ollama** (if using the Ollama backend):
     ```bash
-    pixi run llm-setup
+    ollama serve
     ```
+    Models are downloaded automatically on first use — no manual `ollama pull` required.
 
-    This will start the Ollama server in the background and download the `granite3.3` model. If you want to use a different model, you can pull it manually:
-    ```bash
-    ollama pull <model-name>
-    ```
-
-    **Note**: The Ollama server needs to be running for the tool to work. If you restart your computer, you may need to start it again. Look for the Ollama icon in the menu bar (Mac) or the system tray (Windows).
+That's it. MLX models are also downloaded automatically from HuggingFace Hub on first use and cached locally.
 
 ## Usage
 
@@ -40,25 +29,23 @@ The RSP Evaluator can be used either through its command-line interface (CLI) or
 
 ### Command-Line Interface (CLI)
 
-The CLI provides commands to evaluate a document, summarize the research plan, and extract the resource sharing plan.
-
-To run any of the CLI commands, you can use `pixi run python rspbot.py <command>`.
+Run any command with `pixi run python rspbot.py <command>`.
 
 #### `eval`
 
 Evaluate a document against a policy and rubric.
 
-**Usage:**
 ```bash
 pixi run python rspbot.py eval /path/to/document.pdf [OPTIONS]
 ```
 
 **Options:**
-*   `--policy` / `-p`: Path to the policy document (default: `reference/alsf_resource_sharing_policy.pdf`)
-*   `--rubric` / `-r`: Path to the rubric document (default: `reference/RSP-Rubric-4_11_23.docx`)
-*   `--model` / `-m`: Ollama model to use for analysis (default: `granite3.3`)
-*   `--verbose` / `-v`: Enable verbose output
-*   `--output` / `-o`: Output file path (optional, prints to stdout if not specified)
+- `--policy` / `-p`: Path to the policy document (default: `reference/alsf_resource_sharing_policy.pdf`)
+- `--rubric` / `-r`: Path to the rubric document (default: `reference/RSP-Rubric-4_11_23.docx`)
+- `--model` / `-m`: Model to use (default: backend-appropriate, see below)
+- `--backend` / `-b`: LLM backend — `ollama` or `mlx` (default: `mlx` on Apple Silicon, `ollama` elsewhere)
+- `--verbose` / `-v`: Enable verbose output
+- `--output` / `-o`: Output file path (prints to stdout if not specified)
 
 **Example:**
 ```bash
@@ -69,49 +56,51 @@ pixi run python rspbot.py eval my_grant_proposal.pdf -o evaluation_report.md
 
 Summarize the research plan from a document.
 
-**Usage:**
 ```bash
 pixi run python rspbot.py summarize /path/to/document.pdf [OPTIONS]
 ```
 
-**Options:**
-*   `--model` / `-m`: Ollama model to use for analysis (default: `granite3.3`)
-*   `--verbose` / `-v`: Enable verbose output
-*   `--output` / `-o`: Output file path (optional, prints to stdout if not specified)
-
-**Example:**
-```bash
-pixi run python rspbot.py summarize my_grant_proposal.pdf -o summary.txt
-```
+**Options:** `--model`, `--backend`, `--verbose`, `--output` (same as above)
 
 #### `extract`
 
 Extract the resource sharing plan from a document.
 
-**Usage:**
 ```bash
 pixi run python rspbot.py extract /path/to/document.pdf [OPTIONS]
 ```
 
-**Options:**
-*   `--model` / `-m`: Ollama model to use for analysis (default: `granite3.3`)
-*   `--verbose` / `-v`: Enable verbose output
-*   `--output` / `-o`: Output file path (optional, prints to stdout if not specified)
-
-**Example:**
-```bash
-pixi run python rspbot.py extract my_grant_proposal.pdf -o sharing_plan.txt
-```
+**Options:** `--model`, `--backend`, `--verbose`, `--output` (same as above)
 
 ### Web Interface
 
-The web interface provides a user-friendly way to upload a document and get an evaluation.
-
-**To start the web interface, run:**
 ```bash
 pixi run python rspbot.py serve
 ```
-This will start a web server at `http://127.0.0.1:8000`. You can then open this URL in your browser to use the web interface.
+
+Opens a web server at `http://127.0.0.1:8000`.
+
+## Models
+
+### MLX (Apple Silicon default)
+
+Default model: `mlx-community/Qwen3.6-35B-A3B-4bit`
+
+Models are specified as HuggingFace repository IDs and downloaded automatically on first use. Browse available models at [huggingface.co/mlx-community](https://huggingface.co/mlx-community).
+
+```bash
+pixi run python rspbot.py eval doc.pdf --backend mlx --model mlx-community/Qwen3-14B-4bit
+```
+
+### Ollama (Linux/Windows default)
+
+Default model: `qwen3.6:35b`
+
+Models are pulled from Ollama automatically on first use. Browse available models at [ollama.com/library](https://ollama.com/library).
+
+```bash
+pixi run python rspbot.py eval doc.pdf --backend ollama --model qwen2.5:7b
+```
 
 ## Project Structure
 
@@ -123,6 +112,7 @@ rsp-evaluator/
 │   ├── extract_sharing_plan.txt
 │   └── summarize_research_plan.txt
 ├── src/                       # Source code
+│   ├── config.py
 │   ├── evaluator.py
 │   ├── llm.py
 │   ├── loader.py
