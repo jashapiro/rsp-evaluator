@@ -14,7 +14,7 @@ This rubric uses REVERSE scoring like academic grading (1=A, 5=F):
 A score of 1 means the plan FULLY MEETS the requirements. A score of 5 means the plan COMPLETELY FAILS.
 Lower numbers are BETTER. Higher numbers are WORSE.
 
-Here is the Policy:
+Here is the Policy, which describes the funder's requirements for resource sharing:
 {policy}
 
 Here is a summary of the Research Plan (methods and analyses):
@@ -23,26 +23,26 @@ Here is a summary of the Research Plan (methods and analyses):
 Here is the Resource Sharing Plan to evaluate:
 {resource_sharing_plan}
 
-Here is the Rubric:
+Here is the Rubric, which defines the scoring criteria:
 {rubric}
 
-Please evaluate the Research Sharing Plan against the Policy using the Rubric.
+Please evaluate the Resource Sharing Plan against the Policy using the Rubric.
 You should consider the overall context of the proposal, and evaluate whether the research sharing plan includes plans for sharing outputs from all of the methods and analyses that are proposed in the grant.
 You can ignore any section of the grant proposal that are related to individual investigators, budgeting, or other sections that are not relevant to the Research Sharing Plan.
 
 Remember: Use REVERSE scoring where 1=BEST and 5=WORST.
 Provide separate scores for each portion of the rubric with detailed feedback for each criterion, highlighting weaknesses and suggesting concrete improvements.
 
-If the Research Sharing Plan is from an initial application, only provide application scores and skip progress report scores.
-Similarly, if this is a progress report, only provide progress report scores and skip application scores.
-If there are sections of the rubric that are not relevant to the Research Sharing Plan or Resarch Plan, give those sections a score of "N/A".
-However, if there are parts of rubric that _should_ be covered by the Research Sharing Plan based on the contents of the Research Plan, give those sections a score best on your best reading of the Research Sharing Plan, and provide feedback on why you think that aspect should be addressed in the Research Sharing Plan.
+Determine whether this is an initial application or a progress report based on the document content:
+- If it is an initial application, provide only application scores and skip progress report scores.
+- If it is a progress report, provide only progress report scores and skip application scores.
+If you cannot determine the type, evaluate all sections.
 
-Finally, provide an overall score and a summary of the evaluation.
-Remember: 1=EXCELLENT (best), 5=UNACCEPTABLE (worst).
+If there are sections of the rubric that are not relevant to the Research Sharing Plan or Research Plan, give those sections a score of "N/A".
+However, if there are parts of the rubric that _should_ be covered by the Research Sharing Plan based on the contents of the Research Plan, score those sections based on your best reading of the Research Sharing Plan, and provide feedback on why you think that aspect should be addressed.
 
 IMPORTANT: Format your entire response in Markdown. Use headers, lists, and bold text to make it readable.
-Follow this structure exactly:
+Follow this structure exactly — do not add sections beyond those listed:
 
 # Evaluation of Research Sharing Plan
 
@@ -71,3 +71,4 @@ Follow this structure exactly:
 <Your detailed feedback>
 
 (Repeat for all rubric criteria)
+
