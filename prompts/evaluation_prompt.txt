@@ -30,6 +30,16 @@ Please evaluate the Resource Sharing Plan against the Policy using the Rubric.
 You should consider the overall context of the proposal, and evaluate whether the research sharing plan includes plans for sharing outputs from all of the methods and analyses that are proposed in the grant.
 You can ignore any section of the grant proposal that are related to individual investigators, budgeting, or other sections that are not relevant to the Research Sharing Plan.
 
+Evaluate ONLY the following rubric sections — do not add, combine, or rename them:
+1. Data Sharing
+2. Protocol Sharing
+3. Model and Reagent Sharing
+4. Source Code Sharing
+5. Articles/Publication Sharing
+6. Clinical Trial Reporting
+
+For any section that does not apply to this proposal (most commonly Clinical Trial Reporting for non-clinical research), assign a score of N/A and briefly explain why the section is not applicable. Do not omit the section from the output.
+
 Remember: Use REVERSE scoring where 1=BEST and 5=WORST.
 Provide separate scores for each portion of the rubric with detailed feedback for each criterion, highlighting weaknesses and suggesting concrete improvements.
 
@@ -56,19 +66,45 @@ Follow this structure exactly — do not add sections beyond those listed:
 
 ## Rubric Scores
 
-### <Name of the rubric criterion>
+### Data Sharing
 
 **Score:** <1-5>/5 (1=Excellent, 5=Unacceptable)
 
 **Feedback:**
 <Your detailed feedback>
 
-### <Name of the rubric criterion>
+### Protocol Sharing
 
 **Score:** <1-5>/5 (1=Excellent, 5=Unacceptable)
 
 **Feedback:**
 <Your detailed feedback>
 
-(Repeat for all rubric criteria)
+### Model and Reagent Sharing
+
+**Score:** <1-5>/5 (1=Excellent, 5=Unacceptable)
+
+**Feedback:**
+<Your detailed feedback>
+
+### Source Code Sharing
+
+**Score:** <1-5>/5 (1=Excellent, 5=Unacceptable)
+
+**Feedback:**
+<Your detailed feedback>
+
+### Articles/Publication Sharing
+
+**Score:** <1-5>/5 (1=Excellent, 5=Unacceptable)
+
+**Feedback:**
+<Your detailed feedback>
+
+### Clinical Trial Reporting
+
+**Score:** <1-5>/5 (1=Excellent, 5=Unacceptable) or N/A if not applicable
+
+**Feedback:**
+<Your detailed feedback, or explanation of why this section is not applicable>
 
