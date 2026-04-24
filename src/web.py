@@ -1,7 +1,10 @@
 import json
+import os
 import shutil
 import tempfile
 from pathlib import Path
+
+os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse

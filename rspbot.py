@@ -4,8 +4,15 @@ Research Sharing Plan Evalubot
 Evaluates a target document against a policy and rubric using an LLM.
 """
 
+import os
+
 from pathlib import Path
 from typing import Optional
+
+# Must be set before any import that triggers transformers (langchain_community does so
+# as a side effect when loading document loaders).
+
+os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
 import typer
 
