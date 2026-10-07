@@ -45,7 +45,7 @@ async def evaluate(file: UploadFile = File(...)):
             for event in evaluate_document(tmp_path, policy, rubric, llm):
                 yield json.dumps(event) + "\n"
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - stream any failure to the client as an error event
             yield json.dumps({"type": "error", "message": str(e)}) + "\n"
 
         finally:

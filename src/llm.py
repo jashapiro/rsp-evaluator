@@ -7,6 +7,7 @@ from typing import Any, List, Optional
 # for tokenization). Setting here at module load time ensures it fires first.
 os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
+import ollama
 from langchain_core.language_models.llms import BaseLLM
 from langchain_core.outputs import Generation, LLMResult
 from langchain_ollama import OllamaLLM
@@ -37,7 +38,7 @@ def setup_ollama_llm(model_name: str = "llama3.2", verbose: bool = False) -> Oll
             print(f"Ollama connection successful. Test response: {test_response[:50]}...")
         return llm
 
-    except Exception as e:
+    except (ollama.ResponseError, ConnectionError) as e:
         if "not found" in str(e).lower():
             print(f"Model '{model_name}' not found locally. Pulling from Ollama (this may take a while)...")
             result = subprocess.run(["ollama", "pull", model_name])
@@ -118,6 +119,7 @@ def setup_mlx_llm(model_name: str, verbose: bool = False) -> MLXLLM:
         sys.exit(1)
 
     from huggingface_hub import snapshot_download
+    from huggingface_hub.errors import LocalEntryNotFoundError
     from huggingface_hub.utils import disable_progress_bars, enable_progress_bars
 
     # Check cache silently (no progress bar)
@@ -125,7 +127,7 @@ def setup_mlx_llm(model_name: str, verbose: bool = False) -> MLXLLM:
     cached = True
     try:
         snapshot_download(model_name, local_files_only=True)
-    except Exception:
+    except LocalEntryNotFoundError:
         cached = False
 
     if not cached:

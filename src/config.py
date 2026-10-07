@@ -1,7 +1,6 @@
 import platform
 import sys
 from pathlib import Path
-from typing import Optional
 
 DEFAULT_POLICY_PATH = Path("reference/alsf_resource_sharing_policy.pdf")
 DEFAULT_RUBRIC_PATH = Path("reference/RSP-Rubric-4_11_23.docx")
@@ -18,7 +17,7 @@ def get_default_backend() -> str:
 DEFAULT_BACKEND = get_default_backend()
 
 
-def resolve_model(model_name: Optional[str], backend: str) -> str:
+def resolve_model(model_name: str | None, backend: str) -> str:
     """Return model_name if provided, otherwise the default for the given backend."""
     if model_name is not None:
         return model_name

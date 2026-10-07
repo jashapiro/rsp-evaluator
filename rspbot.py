@@ -89,7 +89,7 @@ def evaluate(
 
     try:
         llm = setup_llm(resolve_model(model_name, backend), backend, verbose)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - CLI boundary: report any LLM setup failure and exit
         console.print(f"[bold red]Error initializing LLM:[/bold red] {e}")
         raise typer.Exit(code=1)
 
@@ -117,7 +117,13 @@ def evaluate(
                     output_dir / f"{input_file.stem}_evaluation.md",
                     console,
                 )
-            except Exception as e:
+            except KeyboardInterrupt:
+                console.print(
+                    f"\n[yellow]Interrupted during document {i} of {len(input_files)}. "
+                    f"Completed evaluations are in: {output_dir}[/yellow]"
+                )
+                raise typer.Exit(code=130)
+            except Exception as e:  # noqa: BLE001 - keep a directory batch going if one document fails
                 console.print(f"[bold red]  Error evaluating document:[/bold red] {e}")
 
         console.print(
@@ -132,7 +138,7 @@ def evaluate(
             _run_evaluation(
                 target, policy_path, rubric_path, llm, verbose, output, console
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - CLI boundary: report any evaluation failure and exit
             console.print(f"[bold red]Error evaluating document:[/bold red] {e}")
             raise typer.Exit(code=1)
 
@@ -222,7 +228,7 @@ def summarize(
             console.print(f"Summary written to {output_file}")
         else:
             console.print(summary)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - CLI boundary: report any summarize failure and exit
         console.print(f"[bold red]Error summarizing document:[/bold red] {e}")
         raise typer.Exit(code=1)
 
@@ -267,7 +273,7 @@ def extract(
             console.print(f"Sharing plan written to {output_file}")
         else:
             console.print(sharing_plan)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - CLI boundary: report any extract failure and exit
         console.print(f"[bold red]Error extracting sharing plan:[/bold red] {e}")
         raise typer.Exit(code=1)
 

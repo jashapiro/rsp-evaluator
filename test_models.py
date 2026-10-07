@@ -292,7 +292,7 @@ def run_summarize(
             elapsed_time=600,
             error="Timeout after 10 minutes"
         )
-    except Exception as e:
+    except (OSError, subprocess.SubprocessError, ValueError) as e:
         return TestResult(
             model=model,
             task="summarize",
@@ -359,7 +359,7 @@ def run_extract(
             elapsed_time=600,
             error="Timeout after 10 minutes"
         )
-    except Exception as e:
+    except (OSError, subprocess.SubprocessError, ValueError) as e:
         return TestResult(
             model=model,
             task="extract",
@@ -427,7 +427,7 @@ def run_eval(
             elapsed_time=1200,
             error="Timeout after 20 minutes"
         )
-    except Exception as e:
+    except (OSError, subprocess.SubprocessError, ValueError) as e:
         return TestResult(
             model=model,
             task="eval",
@@ -760,22 +760,28 @@ Examples:
     # Run tests
     all_results = {}
     skipped_models = []
-    for model in available_models:
-        results, was_skipped = test_model(
-            model=model,
-            target_file=args.target,
-            policy_path=args.policy,
-            rubric_path=args.rubric,
-            output_base=args.output_dir,
-            verbose=args.verbose,
-            skip_eval=args.skip_eval,
-            force=args.force,
-            run=args.run
-        )
-        if was_skipped:
-            skipped_models.append(model)
-        else:
-            all_results[model] = results
+    interrupted = False
+    try:
+        for model in available_models:
+            results, was_skipped = test_model(
+                model=model,
+                target_file=args.target,
+                policy_path=args.policy,
+                rubric_path=args.rubric,
+                output_base=args.output_dir,
+                verbose=args.verbose,
+                skip_eval=args.skip_eval,
+                force=args.force,
+                run=args.run
+            )
+            if was_skipped:
+                skipped_models.append(model)
+            else:
+                all_results[model] = results
+    except KeyboardInterrupt:
+        # Fall through so models that already finished are still summarized and saved.
+        interrupted = True
+        print("\nInterrupted. Saving results for models that completed...")
 
     # Print summary
     print_summary(all_results, skipped_models, args.run)
@@ -806,6 +812,9 @@ Examples:
 
     print(f"\nResults saved to: {args.output_dir}")
     print(f"Summary file: {summary_file}")
+
+    if interrupted:
+        sys.exit(130)
 
 
 if __name__ == "__main__":
