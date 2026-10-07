@@ -5,9 +5,8 @@ Evaluates a target document against a policy and rubric using an LLM.
 """
 
 import os
-
 from pathlib import Path
-from typing import Optional
+from typing import Annotated
 
 # Must be set before any import that triggers transformers (langchain_community does so
 # as a side effect when loading document loaders).
@@ -15,7 +14,12 @@ os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 
 import typer
 
-from src.config import DEFAULT_BACKEND, DEFAULT_POLICY_PATH, DEFAULT_RUBRIC_PATH, resolve_model
+from src.config import (
+    DEFAULT_BACKEND,
+    DEFAULT_POLICY_PATH,
+    DEFAULT_RUBRIC_PATH,
+    resolve_model,
+)
 from src.evaluator import evaluate_document
 from src.llm import setup_llm
 
@@ -37,27 +41,40 @@ def _resolve_path(path: Path, label: str) -> Path:
 
 @app.command()
 def evaluate(
-    target: Path = typer.Argument(
-        ..., help="Path to a document (PDF or Word) or a directory of documents to analyze"
-    ),
-    policy: Path = typer.Option(
-        DEFAULT_POLICY_PATH, "--policy", "-p", help="Path to the policy document",
-    ),
-    rubric: Path = typer.Option(
-        DEFAULT_RUBRIC_PATH, "--rubric", "-r", help="Path to the rubric document",
-    ),
-    model_name: Optional[str] = typer.Option(
-        None, "--model", "-m", help="LLM model to use for analysis"
-    ),
-    backend: str = typer.Option(
-        DEFAULT_BACKEND, "--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    output: Optional[Path] = typer.Option(
-        None, "--output", "-o",
-        help="Output file (single input) or directory (directory input). "
-             "Defaults to stdout for single files, or '<target>_evaluations/' for directories.",
-    ),
+    target: Annotated[
+        Path,
+        typer.Argument(
+            help="Path to a document (PDF or Word) or a directory of documents to analyze",
+        ),
+    ],
+    policy: Annotated[
+        Path,
+        typer.Option("--policy", "-p", help="Path to the policy document"),
+    ] = DEFAULT_POLICY_PATH,
+    rubric: Annotated[
+        Path,
+        typer.Option("--rubric", "-r", help="Path to the rubric document"),
+    ] = DEFAULT_RUBRIC_PATH,
+    model_name: Annotated[
+        str | None,
+        typer.Option("--model", "-m", help="LLM model to use for analysis"),
+    ] = None,
+    backend: Annotated[
+        str,
+        typer.Option("--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"),
+    ] = DEFAULT_BACKEND,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Enable verbose output")
+    ] = False,
+    output: Annotated[
+        Path | None,
+        typer.Option(
+            "--output",
+            "-o",
+            help="Output file (single input) or directory (directory input). "
+            "Defaults to stdout for single files, or '<target>_evaluations/' for directories.",
+        ),
+    ] = None,
 ):
     """Evaluate a document or directory of documents against a policy and rubric."""
     from rich.console import Console
@@ -87,21 +104,34 @@ def evaluate(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         for i, input_file in enumerate(input_files, 1):
-            console.print(f"\n[bold]({i}/{len(input_files)}) Evaluating: {input_file.name}[/bold]")
+            console.print(
+                f"\n[bold]({i}/{len(input_files)}) Evaluating: {input_file.name}[/bold]"
+            )
             try:
-                _run_evaluation(input_file, policy_path, rubric_path, llm, verbose,
-                                output_dir / f"{input_file.stem}_evaluation.md", console)
+                _run_evaluation(
+                    input_file,
+                    policy_path,
+                    rubric_path,
+                    llm,
+                    verbose,
+                    output_dir / f"{input_file.stem}_evaluation.md",
+                    console,
+                )
             except Exception as e:
                 console.print(f"[bold red]  Error evaluating document:[/bold red] {e}")
 
-        console.print(f"\n[bold green]Done. Results written to: {output_dir}[/bold green]")
+        console.print(
+            f"\n[bold green]Done. Results written to: {output_dir}[/bold green]"
+        )
 
     else:
         if target.suffix.lower() not in SUPPORTED_SUFFIXES:
             raise typer.BadParameter(f"Unsupported file type: {target.suffix}")
 
         try:
-            _run_evaluation(target, policy_path, rubric_path, llm, verbose, output, console)
+            _run_evaluation(
+                target, policy_path, rubric_path, llm, verbose, output, console
+            )
         except Exception as e:
             console.print(f"[bold red]Error evaluating document:[/bold red] {e}")
             raise typer.Exit(code=1)
@@ -113,7 +143,7 @@ def _run_evaluation(
     rubric_path: Path,
     llm,
     verbose: bool,
-    output_file: Optional[Path],
+    output_file: Path | None,
     console,
 ) -> None:
     """Run a single evaluation and write or print the result."""
@@ -128,14 +158,20 @@ def _run_evaluation(
         task_id = progress.add_task("Starting...", total=None)
         final_result = ""
 
-        for event in evaluate_document(target_path, policy_path, rubric_path, llm, verbose):
+        for event in evaluate_document(
+            target_path, policy_path, rubric_path, llm, verbose
+        ):
             if event["type"] == "status":
                 progress.update(task_id, description=event["message"])
                 if event.get("elapsed"):
-                    console.print(f"  [green]✓[/green] {event['stage'].title()} completed in {event['elapsed']:.2f}s")
+                    console.print(
+                        f"  [green]✓[/green] {event['stage'].title()} completed in {event['elapsed']:.2f}s"
+                    )
             elif event["type"] == "result":
                 final_result = event["content"]
-                console.print(f"  [bold green]Total time: {event['total_elapsed']:.2f}s[/bold green]")
+                console.print(
+                    f"  [bold green]Total time: {event['total_elapsed']:.2f}s[/bold green]"
+                )
 
     content = f"# Evaluation of: {target_path.name}\n\n{final_result}"
     if output_file:
@@ -148,22 +184,33 @@ def _run_evaluation(
 
 @app.command()
 def summarize(
-    target_file: Path = typer.Argument(
-        ..., help="Path to the document file to analyze (PDF or Word)"
-    ),
-    model_name: Optional[str] = typer.Option(
-        None, "--model", "-m", help="LLM model to use for analysis"
-    ),
-    backend: str = typer.Option(
-        DEFAULT_BACKEND, "--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    output_file: Path = typer.Option(
-        None, "--output", "-o", help="Output file path (optional, prints to stdout if not specified)",
-    ),
+    target_file: Annotated[
+        Path,
+        typer.Argument(help="Path to the document file to analyze (PDF or Word)"),
+    ],
+    model_name: Annotated[
+        str | None,
+        typer.Option("--model", "-m", help="LLM model to use for analysis"),
+    ] = None,
+    backend: Annotated[
+        str,
+        typer.Option("--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"),
+    ] = DEFAULT_BACKEND,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Enable verbose output")
+    ] = False,
+    output_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--output",
+            "-o",
+            help="Output file path (optional, prints to stdout if not specified)",
+        ),
+    ] = None,
 ):
     """Summarize the research plan from a document."""
     from rich.console import Console
+
     from src.evaluator import summarize_research_plan
 
     console = Console()
@@ -182,22 +229,33 @@ def summarize(
 
 @app.command()
 def extract(
-    target_file: Path = typer.Argument(
-        ..., help="Path to the document file to analyze (PDF or Word)"
-    ),
-    model_name: Optional[str] = typer.Option(
-        None, "--model", "-m", help="LLM model to use for analysis"
-    ),
-    backend: str = typer.Option(
-        DEFAULT_BACKEND, "--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    output_file: Path = typer.Option(
-        None, "--output", "-o", help="Output file path (optional, prints to stdout if not specified)",
-    ),
+    target_file: Annotated[
+        Path,
+        typer.Argument(help="Path to the document file to analyze (PDF or Word)"),
+    ],
+    model_name: Annotated[
+        str | None,
+        typer.Option("--model", "-m", help="LLM model to use for analysis"),
+    ] = None,
+    backend: Annotated[
+        str,
+        typer.Option("--backend", "-b", help="LLM backend to use: 'ollama' or 'mlx'"),
+    ] = DEFAULT_BACKEND,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Enable verbose output")
+    ] = False,
+    output_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--output",
+            "-o",
+            help="Output file path (optional, prints to stdout if not specified)",
+        ),
+    ] = None,
 ):
     """Extract the resource sharing plan from a document."""
     from rich.console import Console
+
     from src.evaluator import extract_sharing_plan
 
     console = Console()
@@ -216,12 +274,13 @@ def extract(
 
 @app.command()
 def serve(
-    host: str = typer.Option("127.0.0.1", help="Host to bind the server to"),
-    port: int = typer.Option(8000, help="Port to bind the server to"),
-    reload: bool = typer.Option(False, help="Enable auto-reload"),
+    host: Annotated[str, typer.Option(help="Host to bind the server to")] = "127.0.0.1",
+    port: Annotated[int, typer.Option(help="Port to bind the server to")] = 8000,
+    reload: Annotated[bool, typer.Option(help="Enable auto-reload")] = False,
 ):
     """Start the web interface."""
     import uvicorn
+
     print(f"Starting web interface at http://{host}:{port}")
     uvicorn.run("src.web:app", host=host, port=port, reload=reload)
 
