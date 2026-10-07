@@ -14,7 +14,6 @@ format = "ruff format ."
 [dependencies]
 python = "3.14.*"
 poppler = ">=25.0.0"
-marimo = ">=0.13.0"
 typer = ">=0.15.0"
 rich = ">=13.7.0"
 pytest = ">=8.0.0"
