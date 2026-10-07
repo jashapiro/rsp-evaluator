@@ -1,5 +1,4 @@
-Based on the following text content from a PDF document, provide a comprehensive summary
-that answers the question "What is this PDF about?"
+Based on the following text content from a PDF document, provide a comprehensive summary that answers the question "What is this PDF about?"
 
 Your summary should include:
 1. The main topic or subject matter

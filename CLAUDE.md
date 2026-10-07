@@ -9,6 +9,7 @@ You are working in a Childhood Cancer Data Lab repository.
 - Do NOT make network requests to external services (no `curl`, `wget`, API calls, etc.).
 - Do NOT install system-level packages or modify system configuration.
 - Do NOT access or reference any data that is not already present in this repository.
+- You may use git read operations to get information about past commits and other branches.
 
 ## Expectations
 
